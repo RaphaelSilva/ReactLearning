@@ -1,0 +1,41 @@
+{
+   "name": "server-app",
+   "version": "1.0.0",
+   "description": "Serve of aplication in Reaction ",
+   "main": "index.js",
+   "license": "MIT",
+   "scripts": {
+      "start": "ts-node src/index.ts",
+      "dev": "nodemon src/index.ts",
+      "build": "dev",
+      "test": "nodemon src/test/test.ts",
+      "planb": "tsc --build --watch --init; node --inspect dist/"
+   },
+   "devDependencies": {
+      "@types/cors": "^2.8.6",
+      "@types/express": "^4.17.1",
+      "@types/mysql": "^2.15.7",
+      "@types/node": "^8.0.29",
+      "@typescript-eslint/eslint-plugin": "^2.2.0",
+      "@typescript-eslint/parser": "^2.2.0",
+      "eslint": "^6.3.0",
+      "eslint-config-standard": "^14.1.0",
+      "eslint-plugin-import": "^2.18.2",
+      "eslint-plugin-node": "^10.0.0",
+      "eslint-plugin-promise": "^4.2.1",
+      "eslint-plugin-standard": "^4.0.1",
+      "nodemon": "^1.19.2",
+      "sucrase": "^3.10.1",
+      "ts-node": "^8.4.1",
+      "typescript": "3.3.3333"
+   },
+   "dependencies": {
+      "body-parser": "^1.19.0",
+      "cors": "^2.8.5",
+      "express": "^4.17.1",
+      "mysql": "^2.14.1",
+      "reflect-metadata": "^0.1.10",
+      "typeorm": "0.2.19",
+      "universal-cookie-express": "^4.0.1"
+   }
+}
