@@ -123,8 +123,6 @@ export default function Dashboard(props: Readonly<ISecurityComponet>) {
     { label: 'Integração', icon: 'layers', link: '/member/Integração' },
   ]
 
-  console.log("location DashBoard => " + props.location)
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -167,7 +165,7 @@ export default function Dashboard(props: Readonly<ISecurityComponet>) {
             <Route path='/member/Perfil' render={(p) =>
               <SecurityComponet {...p} {...props}>
                 <Suspense fallback={<div>Loding.......</div>}>
-                  <BodyPerfil {...p} {...props}/>
+                  <BodyPerfil {...p} {...props} />
                 </Suspense>
               </SecurityComponet>
             } />
@@ -175,7 +173,7 @@ export default function Dashboard(props: Readonly<ISecurityComponet>) {
             <Route path={['/member/:text', '/member', '/member/Dashboard']} render={(p) =>
               <SecurityComponet {...p} {...props}>
                 <Suspense fallback={<div>Loding.......</div>}>
-                  <BodyDashboard {...p} {...props} name='BodyDasboard'/>
+                  <BodyDashboard {...p} {...props} name='BodyDasboard' />
                 </Suspense>
               </SecurityComponet>
             } />

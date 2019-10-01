@@ -1,13 +1,19 @@
-import app from './server/App'
+import App from './server/App'
 import MemberLoginController from './controllers/LoginController'
-import MemberDashboardController from './controllers/DashboardController'
+import MemberController from './controllers/MemberController'
 
 console.clear()
 
-const port = 3001
-MemberLoginController.create(app)
-MemberDashboardController.create(app)
+// throw new Error("Method not implemented.");
 
-app.listen(port, () => {
+const port = 3001
+MemberLoginController.create(App.exp)
+MemberController.create(App.exp)
+
+const root = __dirname.toString() + '\\public\\'
+console.log(root)
+App.setStatic(root)
+
+App.exp.listen(port, () => {
   console.log(['server Running at [', port, ']'])
 })

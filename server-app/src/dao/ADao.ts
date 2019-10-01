@@ -45,20 +45,21 @@ export default class ADao<K extends EntitiId> {
           if (errCon) reject(errCon)
           connection.query(query, (err, rows: queryCallback) => {
             exec(err, rows, resolve, reject)
+            connection.destroy()
           })
         })
       })
   }
 
   protected getResult<T> (query: QueryOptions,
-    /* parser function for specialization */ parser?: Function): Promise<T> {
+    /* parser function for specialization */ parser?: (data: any) => T): Promise<T> {
     return this.executeQuery<T>(query, (err, rows: queryCallback, resolve: (value?: T) => void, reject: any) => {
       if (err || rows.length > 1) reject(err)
       if (rows.length < 1) {
         resolve(null)
       } else {
         resolve(parser ? parser(rows[0])
-          : JSON.parse(JSON.stringify(rows[0])) as T)
+          : rows[0] as T)
       }
     })
   }
@@ -68,7 +69,7 @@ export default class ADao<K extends EntitiId> {
     return this.executeQuery<Array<T>>(query, (err, rows: queryCallback, resolve: (value?: Array<T>) => void, reject: any) => {
       if (err) { reject(err) } else {
         resolve(parser ? parser(rows)
-          : JSON.parse((JSON.stringify(rows))) as Array<T>)
+          : rows as unknown as Array<T>)
       }
     })
   }

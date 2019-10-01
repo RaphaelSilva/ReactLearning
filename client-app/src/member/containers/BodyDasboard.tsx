@@ -28,9 +28,7 @@ interface IBodyDasboard extends ISecurityComponet {
 
 export default function BodyDasboard(props: Readonly<IBodyDasboard>) {
     const classes = useStyles()
-    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
-
-    console.log('MainDascoard location => ' + props.location)
+    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)    
 
     return <Grid container spacing={3}>
         {/* Chart */}

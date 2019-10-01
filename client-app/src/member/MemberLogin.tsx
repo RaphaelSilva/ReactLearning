@@ -9,6 +9,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import UserAuth from '../utils/UserAuth';
 import { RouteProps } from 'react-router';
+import { myFetch } from '../utils/FUtil';
 
 const useStyles = makeStyles(theme => ({
     '@global': {
@@ -41,26 +42,15 @@ export default function MemberLogin(props: Readonly<RouteProps>) {
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const data = new FormData(event.currentTarget)
-        fetch("/api/doLogin", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                user: {
-                    userName: data.get('userName'),
-                    password: data.get('password'),
-                }
-            })
-        }).then((response: Response) => {
-            response.json().then((data) => {
-                if (response.status === 200) {
-                    const rUserAuth = UserAuth.clone(JSON.parse(data))
-                    setUser(rUserAuth)
-                } else {
-                    alert(data.mensage)
-                }
-            })
+
+        myFetch<string>("/api/doLogin", JSON.stringify({
+            user: {
+                userName: data.get('userName'),
+                password: data.get('password'),
+            }
+        })).then((data) => {
+            const rUserAuth = UserAuth.clone(JSON.parse(data))
+            setUser(rUserAuth)
         }).catch((error) => {
             console.log(error)
         })

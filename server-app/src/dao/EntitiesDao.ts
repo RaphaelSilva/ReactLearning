@@ -25,6 +25,18 @@ export class ProfessionalDao extends ADao<Professional> {
       'isAddressShowed', 'addressId', 'contactId'])
   }
 
+  public fetchByPerfilId (perfilId: number): Promise<string> {
+    let sql = this.buildSelect()
+    sql += ' join perfil on professional.id = perfil.professionalId'
+    sql += ' left join contact on professional.contactId = contact.id'
+    sql += ' left join address on professional.addressId = address.id'
+    sql += ' where perfil.id = ?'
+    return this.getResult<string>({
+      sql: sql,
+      values: [perfilId]
+    })
+  }
+
   public fetchByName (name: string): Promise<Professional> {
     return this.getResult<Professional>({
       sql: this.selectWhere('name = ?'),
@@ -51,8 +63,6 @@ export class UserDao extends ADao<User> {
   }
 
   public fetchUser (userName: string, cls = 'userName = ?'): Promise<User> {
-    console.log(cls)
-
     return this.getResult<User>({
       sql: this.selectWhere(cls),
       values: [userName]

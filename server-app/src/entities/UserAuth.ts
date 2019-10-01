@@ -1,41 +1,43 @@
 import { Request } from 'express'
-import User from './User'
+import { User } from './IEntities'
 
 export default class UserAuth {
-    public name: string
-    public isAuthenticated: boolean
-    public addressIp: string
-    public route: string
-    public filePath: string
-    public fileName: string
+  public name: string
+  public isAuthenticated: boolean
+  public addressIp: string
+  public route: string
+  public filePath: string
+  public fileName: string
+  public perfilId: number
 
-    static getAddressIp (req: Request): string {
-      return '' + (req.headers['x-forwarded-for'] || req.connection.remoteAddress)
-    }
+  static getAddressIp (req: Request): string {
+    return '' + (req.headers['x-forwarded-for'] || req.connection.remoteAddress)
+  }
 
-    constructor (user?: User, password?: string, addressIp?: string) {
-      this.name = user ? user.userName : ''
-      this.isAuthenticated = user ? (user.password === password) : false
-      this.addressIp = addressIp
-    }
+  constructor (user?: User, password?: string, addressIp?: string) {
+    this.name = user ? user.userName : ''
+    this.isAuthenticated = user ? (user.password === password) : false
+    this.addressIp = addressIp
+  }
 
-    static clone (uAuth: UserAuth): UserAuth {
-      const nUAuth = new UserAuth()
-      nUAuth.name = uAuth.name
-      nUAuth.isAuthenticated = uAuth.isAuthenticated
-      nUAuth.addressIp = uAuth.addressIp
-      nUAuth.route = uAuth.route
-      nUAuth.filePath = uAuth.filePath
-      nUAuth.fileName = uAuth.fileName
-      return nUAuth
-    }
+  static clone (uAuth: UserAuth): UserAuth {
+    const nUAuth = new UserAuth()
+    nUAuth.name = uAuth.name
+    nUAuth.isAuthenticated = uAuth.isAuthenticated
+    nUAuth.addressIp = uAuth.addressIp
+    nUAuth.route = uAuth.route
+    nUAuth.filePath = uAuth.filePath
+    nUAuth.fileName = uAuth.fileName
+    nUAuth.perfilId = uAuth.perfilId
+    return nUAuth
+  }
 
-    public getFileName (): string {
-      this.fileName = this.name + this.addressIp.replace('.', '').replace('.', '').replace('.', '')
-      return this.fileName
-    }
+  public getFileName (): string {
+    this.fileName = this.name + this.addressIp.replace('.', '').replace('.', '').replace('.', '')
+    return this.fileName
+  }
 
-    public getFullPath (): string {
-      return this.filePath + this.getFileName()
-    }
+  public getFullPath (): string {
+    return this.filePath + this.getFileName()
+  }
 }

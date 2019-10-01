@@ -10,6 +10,15 @@ daoTest.testInsertData()
   .then(() => {
     daoTest.testFetchById()
       .then(() => {
-        daoTest.testRemoveById()
+        daoTest.testRemoveById().catch((error) => {
+          console.log('testRemoveById')
+          console.log(error)
+        })
+      }).catch((error) => {
+        console.log('testFetchById')
+        console.log(error)
       })
+  }).catch((error) => {
+    console.log('testInsertData')
+    console.log(error)
   })

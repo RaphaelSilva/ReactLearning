@@ -16,6 +16,10 @@ class App {
       this.exp.use(cors())
       this.exp.use(cookiesMiddleware())
     }
+
+    public setStatic (root: string): void{
+      this.exp.use(express.static(root))
+    }
 }
 
-export default new App().exp
+export default new App()

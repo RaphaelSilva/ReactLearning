@@ -29,12 +29,6 @@ export default class MemberLoginController {
   }
 
   public isUserAuth = (req: Request, res: Response, next: Function): void => {
-    let cookie = req.headers.cookie.toString()
-    if (cookie) {
-      cookie = decodeURIComponent(cookie)
-    } else {
-      throw Error()
-    }
     const cookieName = MemberLoginController.cookieName
     const userAuth = UserAuth.clone(req.universalCookies.get(cookieName))
     req.userAuth = OpenFile.read<UserAuth>(userAuth.getFullPath())
@@ -55,11 +49,12 @@ export default class MemberLoginController {
       this.userDao.fetchUser(userName).then((user) => {
         const userAuth = new UserAuth(user, password, UserAuth.getAddressIp(req))
         if (userAuth.isAuthenticated) {
+          userAuth.perfilId = user.perfilId
           userAuth.route = this.pathRouterGetUserAuth
           userAuth.filePath = OpenFile.path
           OpenFile.write<UserAuth>(userAuth.getFullPath(), userAuth)
           const jsonUserAuth = JSON.stringify(userAuth)
-          res.cookie(MemberLoginController.cookieName, jsonUserAuth, {
+          req.universalCookies.set(MemberLoginController.cookieName, jsonUserAuth, {
             path: '/',
             maxAge: 30 * 60 * 1000
           }) // expires in 30 minutes
