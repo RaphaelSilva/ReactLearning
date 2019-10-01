@@ -20,8 +20,7 @@ export default class SecurityComponet extends Component<ISecurityComponet> {
         const cookie = cookies.get(props.cookieName)
         if (cookie) {
           this.isAuthenticated = (cookie as Authenticated).isAuthenticated
-        } else this.isAuthenticated = false
-        console.log(props)        
+        } else this.isAuthenticated = false           
     }
 
     render() {
