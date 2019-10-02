@@ -9,7 +9,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import UserAuth from '../utils/UserAuth';
 import { RouteProps } from 'react-router';
-import { myFetch } from '../utils/FUtil';
+import { fetchPost } from '../utils/FUtil';
 
 const useStyles = makeStyles(theme => ({
     '@global': {
@@ -43,7 +43,7 @@ export default function MemberLogin(props: Readonly<RouteProps>) {
         event.preventDefault()
         const data = new FormData(event.currentTarget)
 
-        myFetch<string>("/api/doLogin", JSON.stringify({
+        fetchPost<string>("/api/doLogin", JSON.stringify({
             user: {
                 userName: data.get('userName'),
                 password: data.get('password'),

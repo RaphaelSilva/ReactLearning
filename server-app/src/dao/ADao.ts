@@ -24,6 +24,7 @@ export default class ADao<K extends EntitiId> {
     database: 'db_spaziord'
   })
 
+  static debug = false
   protected table: string
   protected fields: Array<string>
 
@@ -44,6 +45,7 @@ export default class ADao<K extends EntitiId> {
         ADao.pool.getConnection((errCon, connection) => {
           if (errCon) reject(errCon)
           connection.query(query, (err, rows: queryCallback) => {
+            if (ADao.debug) console.log(rows)
             exec(err, rows, resolve, reject)
             connection.destroy()
           })
@@ -53,6 +55,7 @@ export default class ADao<K extends EntitiId> {
 
   protected getResult<T> (query: QueryOptions,
     /* parser function for specialization */ parser?: (data: any) => T): Promise<T> {
+    if (ADao.debug) console.log(query)
     return this.executeQuery<T>(query, (err, rows: queryCallback, resolve: (value?: T) => void, reject: any) => {
       if (err || rows.length > 1) reject(err)
       if (rows.length < 1) {
@@ -66,6 +69,7 @@ export default class ADao<K extends EntitiId> {
 
   protected getResults<T> (query: QueryOptions,
     /* parser function for specialization */ parser?: Function): Promise<Array<T>> {
+    if (ADao.debug) console.log(query)
     return this.executeQuery<Array<T>>(query, (err, rows: queryCallback, resolve: (value?: Array<T>) => void, reject: any) => {
       if (err) { reject(err) } else {
         resolve(parser ? parser(rows)
@@ -75,6 +79,7 @@ export default class ADao<K extends EntitiId> {
   }
 
   protected insertData (obj: K, query: QueryOptions): Promise<K> {
+    if (ADao.debug) console.log(query)
     return this.executeQuery<K>(query, (err, result: ResultQuery, resolve: (value?: K) => void, reject: any) => {
       if (err) {
         reject(err)
@@ -86,6 +91,7 @@ export default class ADao<K extends EntitiId> {
   }
 
   protected removeData (obj: K, query: QueryOptions): Promise<K> {
+    if (ADao.debug) console.log(query)
     return this.executeQuery<K>(query, (err, result: ResultQuery, resolve: (value?: K) => void, reject: any) => {
       if (err) {
         reject(err)
@@ -122,7 +128,8 @@ export default class ADao<K extends EntitiId> {
     return this.getResults<K>({ sql: this.buildSelect(this.fields) }, parse)
   }
 
-  public fetchBy (param: string | number | Array<string | number>,
+  public fetchBy (
+    param: string | number | Array<string | number>,
     whereParam = 'id = ?'): Promise<Array<K>> {
     return this.getResults<K>({
       sql: this.selectWhere(whereParam),

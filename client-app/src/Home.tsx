@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
-
-import Link from '@material-ui/core/Link';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import ProductSale from './home/ProductSale'
+import Index from './home/Index'
 
 export class Home extends Component {
     render() {
         return (
-            <div>
-                <h1>Ola Mundo</h1>
-                <Link color="inherit" href="/member">Area do Membro</Link>
-            </div>
+            <Router>
+                <Switch>
+                    <Route exact path={['/', '/home']}  render={(p) => <Index />} />
+                    <Route path='/p/:productTag' render={(p) => <ProductSale {...p} />} />
+                </Switch>
+            </Router>
         )
     }
 }

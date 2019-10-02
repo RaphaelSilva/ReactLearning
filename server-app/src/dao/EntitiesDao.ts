@@ -87,4 +87,11 @@ export class ProductDao extends ADao<Product> {
     super('product', ['name', 'description', 'value', 'tagLink', 'registerDate',
       'productTypeId', 'perfilId'])
   }
+
+  public fetchByTag (tagLink: string): Promise<Product> {
+    return this.getResult<Product>({
+      sql: this.selectWhere('tagLink = ?'),
+      values: [tagLink]
+    })
+  }
 }

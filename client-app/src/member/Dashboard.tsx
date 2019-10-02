@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -14,13 +14,11 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 
 import { CssBaseline } from '@material-ui/core';
-import { Route, Switch } from 'react-router-dom';
 import RenderMenu from '../component/RenderMenu';
 import { MenuList } from '../utils/Menu';
-import BodyPerfil from './containers/BodyPerfil';
-import SecurityComponet, { ISecurityComponet } from '../component/SecurityComponet';
+import { ISecurityComponet } from '../component/SecurityComponet';
+import RouteDasboard from './containers/RouteDasboard';
 
-const BodyDashboard = React.lazy(() => import('./containers/BodyDasboard'))
 
 const drawerWidth = 240;
 
@@ -125,7 +123,7 @@ export default function Dashboard(props: Readonly<ISecurityComponet>) {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
+      <CssBaseline />      
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
           <IconButton edge="start" color="inherit" aria-label="open drawer" onClick={handleDrawerOpen}
@@ -160,27 +158,9 @@ export default function Dashboard(props: Readonly<ISecurityComponet>) {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Switch>
-
-            <Route path='/member/Perfil' render={(p) =>
-              <SecurityComponet {...p} {...props}>
-                <Suspense fallback={<div>Loding.......</div>}>
-                  <BodyPerfil {...p} {...props} />
-                </Suspense>
-              </SecurityComponet>
-            } />
-
-            <Route path={['/member/:text', '/member', '/member/Dashboard']} render={(p) =>
-              <SecurityComponet {...p} {...props}>
-                <Suspense fallback={<div>Loding.......</div>}>
-                  <BodyDashboard {...p} {...props} name='BodyDasboard' />
-                </Suspense>
-              </SecurityComponet>
-            } />
-
-          </Switch>
+          <RouteDasboard {...props} />
         </Container>
       </main>
     </div >
-  );
+  )
 }

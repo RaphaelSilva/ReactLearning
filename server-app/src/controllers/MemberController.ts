@@ -2,8 +2,9 @@ import { Request, Response, Application } from 'express'
 import MemberLoginController from './LoginController'
 import { ProfessionalDao, AddressDao, ContactDao } from '../dao/EntitiesDao'
 import { Professional } from '../entities/IEntities'
+import { AController } from './AController'
 
-export default class MemberController {
+export default class MemberController extends AController {
   static instance: MemberController
 
   static create (app: Application): MemberController {
@@ -31,16 +32,10 @@ export default class MemberController {
   private contactDao: ContactDao
 
   private constructor () {
+    super()
     this.professionalDao = new ProfessionalDao()
     this.addressDao = new AddressDao()
     this.contactDao = new ContactDao()
-  }
-
-  private sendError (res: Response, error, message): void {
-    res.status(500).send({
-      mensage: message,
-      error: error
-    })
   }
 
   private updateProfessional = async (req: Request, res: Response): Promise<void> => {
