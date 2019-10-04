@@ -22,7 +22,7 @@ export default class UserAuth implements Authenticated{
         nUAuth.route = uAuth.route
         nUAuth.filePath = uAuth.filePath
         nUAuth.fileName = uAuth.fileName
-        nUAuth.perfilId = uAuth.perfilId
+        nUAuth.profileId = uAuth.profileId
         return nUAuth
     }
 
@@ -32,7 +32,7 @@ export default class UserAuth implements Authenticated{
     public route: string
     public filePath: string
     public fileName: string
-    public perfilId: string
+    public profileId: string
 
     constructor() {
         this.route = ''
@@ -41,7 +41,7 @@ export default class UserAuth implements Authenticated{
         this.addressIp = ''
         this.filePath = ''
         this.fileName = ''
-        this.perfilId = ''
+        this.profileId = ''
     }
 
     public getUserProps(): Promise<void> {

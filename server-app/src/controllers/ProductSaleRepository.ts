@@ -1,9 +1,9 @@
-import { ProfessionalDao, AddressDao, ContactDao, ProductDao, PerfilDao } from '../dao/EntitiesDao'
-import { Product, Perfil, Professional } from '../entities/IEntities'
+import { ProfessionalDao, AddressDao, ContactDao, ProductDao, ProfileDao } from '../dao/EntitiesDao'
+import { Product, Profile, Professional } from '../entities/IEntities'
 
 export interface ProductToSale {
     product: Product;
-    perfil: Perfil;
+    profile: Profile;
     professional: Professional;
 }
 
@@ -12,29 +12,29 @@ export default class ProductSaleRepository {
     public addressDao: AddressDao
     public contactDao: ContactDao
     public productDao: ProductDao
-    public perfilDao: PerfilDao
+    public profileDao: ProfileDao
 
     constructor (
       professionalDao?: ProfessionalDao,
       addressDao?: AddressDao,
       contactDao?: ContactDao,
       productDao?: ProductDao,
-      perfilDao?: PerfilDao
+      profileDao?: ProfileDao
     ) {
       this.addressDao = addressDao || new AddressDao()
       this.contactDao = contactDao || new ContactDao()
       this.professionalDao = professionalDao || new ProfessionalDao()
       this.productDao = productDao || new ProductDao()
-      this.perfilDao = perfilDao || new PerfilDao()
+      this.profileDao = profileDao || new ProfileDao()
     }
 
     public getProductToSale = async (tagLink: string): Promise<ProductToSale> => {
       const product = await this.productDao.fetchByTag(tagLink)
-      const perfil = await this.perfilDao.fetchById(product.perfilId)
-      const professional = await this.professionalDao.fetchById(perfil.professionalId)
+      const profile = await this.profileDao.fetchById(product.profileId)
+      const professional = await this.professionalDao.fetchById(profile.professionalId)
       return {
         product: product,
-        perfil: perfil,
+        profile: profile,
         professional: professional
       }
     }

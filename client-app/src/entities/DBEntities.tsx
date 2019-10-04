@@ -3,7 +3,7 @@ export interface EntitiId {
 }
 
 export interface Address extends EntitiId{
-    zipCod: number;
+    postalCode: string;
     street: string;
     num: string;
     complement: string;
@@ -38,7 +38,7 @@ export interface Commerce extends EntitiId{
     contactId: number;
 }
 
-export interface Perfil extends EntitiId{
+export interface Profile extends EntitiId{
     professional: Professional;
     professionalId: number;
     commerce: Commerce;
@@ -48,8 +48,8 @@ export interface Perfil extends EntitiId{
 export interface User extends EntitiId{
     userName: string;
     password: string;
-    perfil: Perfil;
-    perfilId: number;
+    profile: Profile;
+    profileId: number;
     actived: boolean;
 }
 
@@ -74,5 +74,5 @@ export interface Product extends EntitiId{
     tagLink: string;
     registerDate: Date;
     productTypeId: number;
-    perfilId: number;
+    profileId: number;
 }

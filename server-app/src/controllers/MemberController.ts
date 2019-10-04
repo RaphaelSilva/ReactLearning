@@ -53,7 +53,7 @@ export default class MemberController extends AController {
 
   private findProfessionalByTag = (req: Request, res: Response): void => {
     if (req.userAuth) {
-      this.professionalDao.fetchByPerfilId(req.userAuth.perfilId)
+      this.professionalDao.fetchByProfileId(req.userAuth.profileId)
         .then((professional) => {
           res.json(professional)
         }).catch((error) => { this.sendError(res, error, '') })

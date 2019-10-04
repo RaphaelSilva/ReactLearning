@@ -8,7 +8,7 @@ export default class UserAuth {
   public route: string
   public filePath: string
   public fileName: string
-  public perfilId: number
+  public profileId: number
 
   static getAddressIp (req: Request): string {
     return '' + (req.headers['x-forwarded-for'] || req.connection.remoteAddress)
@@ -28,7 +28,7 @@ export default class UserAuth {
     nUAuth.route = uAuth.route
     nUAuth.filePath = uAuth.filePath
     nUAuth.fileName = uAuth.fileName
-    nUAuth.perfilId = uAuth.perfilId
+    nUAuth.profileId = uAuth.profileId
     return nUAuth
   }
 

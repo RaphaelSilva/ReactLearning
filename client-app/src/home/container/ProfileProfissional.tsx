@@ -1,6 +1,5 @@
 import React from 'react'
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { Button } from '@material-ui/core';
@@ -12,7 +11,6 @@ interface PerfilProfissionalI {
 
 export default function PerfilProfissional(props: Readonly<PerfilProfissionalI>) {
     return (
-        <Paper>
             <Grid container spacing={2}>
                 <Grid item>
                     <ButtonBase >
@@ -40,7 +38,6 @@ export default function PerfilProfissional(props: Readonly<PerfilProfissionalI>)
                     </Grid>
                 </Grid>
             </Grid>
-        </Paper>
     )
 
 }

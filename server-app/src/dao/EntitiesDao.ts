@@ -1,6 +1,6 @@
 import ADao from './ADao'
 import {
-  Product, ProductType, Local, Perfil, Professional,
+  Product, ProductType, Local, Profile, Professional,
   Address,
   Contact,
   Commerce,
@@ -9,7 +9,7 @@ import {
 
 export class AddressDao extends ADao<Address> {
   constructor () {
-    super('address', ['zipCod', 'street', 'num', 'complement', 'district', 'city', 'state'])
+    super('address', ['postalCode', 'street', 'num', 'complement', 'district', 'city', 'state'])
   }
 }
 
@@ -25,15 +25,15 @@ export class ProfessionalDao extends ADao<Professional> {
       'isAddressShowed', 'addressId', 'contactId'])
   }
 
-  public fetchByPerfilId (perfilId: number): Promise<string> {
+  public fetchByProfileId (profileId: number): Promise<string> {
     let sql = this.buildSelect()
-    sql += ' join perfil on professional.id = perfil.professionalId'
+    sql += ' join profile on professional.id = profile.professionalId'
     sql += ' left join contact on professional.contactId = contact.id'
     sql += ' left join address on professional.addressId = address.id'
-    sql += ' where perfil.id = ?'
+    sql += ' where profile.id = ?'
     return this.getResult<string>({
       sql: sql,
-      values: [perfilId]
+      values: [profileId]
     })
   }
 
@@ -51,15 +51,15 @@ export class CommerceDao extends ADao<Commerce> {
   }
 }
 
-export class PerfilDao extends ADao<Perfil> {
+export class ProfileDao extends ADao<Profile> {
   constructor () {
-    super('perfil', ['professionalId', 'commerceId'])
+    super('profile', ['professionalId', 'commerceId'])
   }
 }
 
 export class UserDao extends ADao<User> {
   constructor () {
-    super('sysUser', ['userName', 'password', 'perfilId', 'actived'])
+    super('sysUser', ['userName', 'password', 'profileId', 'actived'])
   }
 
   public fetchUser (userName: string, cls = 'userName = ?'): Promise<User> {
@@ -85,7 +85,7 @@ export class ProductTypeDao extends ADao<ProductType> {
 export class ProductDao extends ADao<Product> {
   constructor () {
     super('product', ['name', 'description', 'value', 'tagLink', 'registerDate',
-      'productTypeId', 'perfilId'])
+      'productTypeId', 'profileId'])
   }
 
   public fetchByTag (tagLink: string): Promise<Product> {

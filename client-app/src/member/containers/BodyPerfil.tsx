@@ -70,7 +70,7 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
 
     const [address, setAddress] = useState({
         city: '', complement: '', district: '', num: '',
-        state: '', street: '', zipCod: 0
+        state: '', street: '', postalCode: ''
     } as Address)
 
     const [contact, setContact] = useState({
@@ -205,8 +205,8 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                             {/* ------------------------------------------ */}
                             <Grid item xs={1}>
                                 <TextField className={classes.field}
-                                    name="zipCod" id="address.zipCod"
-                                    label="Cep" value={address.zipCod}
+                                    name="postalCode" id="address.postalCode"
+                                    label="Cep" value={address.postalCode}
                                     onChange={handleInputChangeAddress} />
                             </Grid>
                             <Grid item xs={3}>

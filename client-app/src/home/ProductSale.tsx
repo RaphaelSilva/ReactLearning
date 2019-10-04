@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { fetchGet } from '../utils/FUtil'
 import { Container } from '@material-ui/core'
-import PerfilProfissional from './container/PerfilProfissional'
 import { ProductToSale } from '../entities/ViewEntities'
-import { ParseProfessional, ParsePerfil, ParseProduct } from '../entities/ParserJson'
+import { ParseProfessional, ParseProfile, ParseProduct } from '../entities/ParserJson'
+import ServicePage from './template/ServicePage'
 
 interface IndexResult {
     match: {
@@ -13,19 +13,21 @@ interface IndexResult {
     }
 }
 
-interface StateInterface extends ProductToSale{
+interface StateInterface /*extends ProductToSale*/ {
     isFetched: boolean
+    productToSale: ProductToSale
 }
 
 export default class ProductSale extends Component<IndexResult, StateInterface> {
     constructor(props: Readonly<IndexResult>) {
         super(props)
-
         this.state = {
             isFetched: false,
-            professional: ParseProfessional(),
-            perfil: ParsePerfil(),
-            product: ParseProduct()
+            productToSale: {
+                professional: ParseProfessional(),
+                profile: ParseProfile(),
+                product: ParseProduct()
+            }
         }
 
         fetchGet<ProductToSale>('/api/productToSale/' + this.props.match.params.productTag)
@@ -35,9 +37,7 @@ export default class ProductSale extends Component<IndexResult, StateInterface> 
     public resultFromFetch = (data: ProductToSale) => {
         this.setState({
             isFetched: true,
-            professional: data.professional,
-            perfil: data.perfil,
-            product: data.product
+            productToSale: data
         })
     }
 
@@ -45,10 +45,11 @@ export default class ProductSale extends Component<IndexResult, StateInterface> 
         return (
             <>
                 <Container>
-                    { this.state.isFetched ? (                    
-                        
-                    <PerfilProfissional professional={this.state.professional}/> 
-                    
+                    {this.state.isFetched ? (
+                        //TODO: Ask to product Template before 
+                        <ServicePage productToSale={this.state.productToSale} />
+
+                        // TODO: Make a Loading component
                     ) : 'Loading....'}
                 </Container>
             </>

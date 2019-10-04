@@ -1,4 +1,4 @@
-import { Professional, Address, Contact, Perfil, Commerce, Product } from "./DBEntities"
+import { Professional, Address, Contact, Profile, Commerce, Product } from "./DBEntities"
 
 export function ParseAddress(data?: any): Address {
     return {
@@ -9,7 +9,7 @@ export function ParseAddress(data?: any): Address {
         num: data ? (data as Address).num || '' : '',
         state: data ? (data as Address).state || '' : '',
         street: data ? (data as Address).street || '' : '',
-        zipCod: data ? (data as Address).zipCod || 0 : 0
+        postalCode: data ? (data as Address).postalCode || '' : ''
     }
 }
 
@@ -47,12 +47,12 @@ export function ParseCommerce(data?: any): Commerce {
     }
 }
 
-export function ParsePerfil(data?: any): Perfil {
+export function ParseProfile(data?: any): Profile {
     return {
-        professional: data ? (data as Perfil).professional || ParseProfessional(data) : ParseProfessional(),
-        professionalId: data ? (data as Perfil).professionalId || 0 : 0,
-        commerce: data ? (data as Perfil).commerce || ParseCommerce(data) : ParseCommerce(),
-        commerceId: data ? (data as Perfil).commerceId || 0 : 0
+        professional: data ? (data as Profile).professional || ParseProfessional(data) : ParseProfessional(),
+        professionalId: data ? (data as Profile).professionalId || 0 : 0,
+        commerce: data ? (data as Profile).commerce || ParseCommerce(data) : ParseCommerce(),
+        commerceId: data ? (data as Profile).commerceId || 0 : 0
     }
 }
 
@@ -64,6 +64,6 @@ export function ParseProduct(data?: any): Product {
     tagLink: data ? (data as Product).tagLink || '' : '',
     registerDate: data ? (data as Product).registerDate || '' : new Date(),
     productTypeId: data ? (data as Product).productTypeId || 0 : 0,
-    perfilId: data ? (data as Product).perfilId || 0 : 0
+    profileId: data ? (data as Product).profileId || 0 : 0
     }
 }
