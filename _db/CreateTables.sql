@@ -1,26 +1,20 @@
 USE `db_spaziord`;
 
-DROP TABLE IF EXISTS `sysTableId`;
-CREATE TABLE IF NOT EXISTS `sysTableId` (
-  `tableName` VARCHAR(50) NOT NULL,
-  `currentId` INT NULL,
-  `nextId` INT NULL,
-  PRIMARY KEY (`tableName`))
-ENGINE=InnoDB
-DEFAULT CHARACTER SET utf8;
-
-DROP TABLE IF EXISTS `sysUser`;
-CREATE TABLE IF NOT EXISTS `sysUser` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `userName` VARCHAR(50) NOT NULL,
-  `password` VARCHAR(128) NOT NULL,
-  `profileId` INT NULL,
-  `actived`  TINYINT DEFAULT 1,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET utf8;
-
 DROP TABLE IF EXISTS `address`;
+DROP TABLE IF EXISTS `contact`;
+DROP TABLE IF EXISTS `customer`;
+DROP TABLE IF EXISTS `professional`;
+DROP TABLE IF EXISTS `commerce`;
+DROP TABLE IF EXISTS `profile`;
+DROP TABLE IF EXISTS `sysUser`;
+DROP TABLE IF EXISTS `local`;
+DROP TABLE IF EXISTS `productType`;
+DROP TABLE IF EXISTS `product`;
+DROP TABLE IF EXISTS `payment`;
+DROP TABLE IF EXISTS `cart`;
+DROP TABLE IF EXISTS `Order`;
+DROP TABLE IF EXISTS `OrderItem`;
+
 CREATE TABLE `address` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `postalCode` VARCHAR(20) NULL,
@@ -34,7 +28,6 @@ CREATE TABLE `address` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `contact`;
 CREATE TABLE IF NOT EXISTS `contact` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `phone` VARCHAR(15) NOT NULL,
@@ -43,7 +36,6 @@ CREATE TABLE IF NOT EXISTS `contact` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET utf8;
 
-DROP TABLE IF EXISTS `customer`;
 CREATE TABLE `customer` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(20) NULL,
@@ -57,21 +49,19 @@ CREATE TABLE `customer` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `professional`;
 CREATE TABLE `professional` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `customerId` VARCHAR(20) NULL,
-  `isAddressShowed` TINYINT NULL,
   -- it can be same of the customer table at creation
   `img` VARCHAR(100) NULL,
   `cnpj` VARCHAR(14) NULL,
+  `isAddressShowed` TINYINT NULL,
   `addressId` INT NULL,
   `contactId` INT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `commerce`;
 CREATE TABLE `commerce` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
@@ -83,8 +73,6 @@ CREATE TABLE `commerce` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `profile`;
-DEFAULT CHARACTER SET = utf8;
 CREATE TABLE `profile` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `professionalId` INT NULL,
@@ -94,7 +82,16 @@ CREATE TABLE `profile` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `local`;
+CREATE TABLE IF NOT EXISTS `sysUser` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userName` VARCHAR(50) NOT NULL,
+  `password` VARCHAR(128) NOT NULL,
+  `profileId` INT NULL,
+  `actived`  TINYINT DEFAULT 1,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET utf8;
+
 CREATE TABLE `local` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
@@ -105,7 +102,6 @@ CREATE TABLE `local` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `productType`;
 CREATE TABLE `productType` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
@@ -114,7 +110,6 @@ CREATE TABLE `productType` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
@@ -128,7 +123,6 @@ CREATE TABLE `product` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `payment`;
 CREATE TABLE `payment` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
@@ -140,7 +134,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 -- Just to save all cart from cookies
-DROP TABLE IF EXISTS `cart`;
 CREATE TABLE `cart` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `info` VARCHAR(50) NULL,
@@ -154,8 +147,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 -- If some item were a recurrence then split it to a new checkout
-DROP TABLE IF EXISTS `checkout`;
-CREATE TABLE `checkout` (
+CREATE TABLE `order` (
   `id` INT NOT NULL AUTO_INCREMENT,
   -- credcard, debtcard, bitcoins, _boleto_
   `paymentMethod` CHAR(8) NULL,
@@ -163,12 +155,12 @@ CREATE TABLE `checkout` (
   `cartId` INT NULL,
   `subTotal` DECIMAL(5,3),
   -- It will came from PagSeguro
-  `status` CHAR(15)
+  `status` CHAR(15),
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `checkoutItem`;
-CREATE TABLE `checkoutItem` (
+CREATE TABLE `orderItem` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `checkoutId` INT NULL,
   `paymentId` INT NULL,
@@ -177,7 +169,8 @@ CREATE TABLE `checkoutItem` (
   `customerId` INT NULL,
   -- check payment roles before setting if
   `isRecurrence` TINYINT DEFAULT 0,
-  `quantity` INT NULL
+  `quantity` INT NULL,
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 

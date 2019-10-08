@@ -5,7 +5,7 @@ import {
     FormControlLabel, Switch, Typography
 } from '@material-ui/core'
 import clsx from 'clsx';
-import { fetchPost } from '../../utils/FUtil';
+import { fetchPost, fetchGet } from '../../utils/FUtil';
 import { Professional, Contact, Address } from '../../entities/DBEntities';
 import { ParseProfessional } from '../../entities/ParserJson';
 import DateFnsUtils from '@date-io/date-fns';
@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const fetchProfessional = async (setting: (prof: Professional) => void) => {
-    const profJson = await fetchPost<string>('/api/member/getProfessional')
+    const profJson = await fetchGet<string>('/api/member/getProfessional')    
     setting(ParseProfessional(profJson))
 }
 

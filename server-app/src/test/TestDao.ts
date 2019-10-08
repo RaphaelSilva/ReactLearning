@@ -1,10 +1,10 @@
-import { User, Professional, Commerce, Perfil, Address, Contact, EntitiId } from '../entities/IEntities'
-import { AddressDao, ContactDao, ProfessionalDao, CommerceDao, PerfilDao, UserDao } from '../dao/EntitiesDao'
+import { User, Professional, Commerce, Profile, Address, Contact, EntitiId, Customer } from '../entities/IEntities'
+import { AddressDao, ContactDao, ProfessionalDao, CommerceDao, ProfileDao, UserDao, CustomerDao } from '../dao/EntitiesDao'
 import ADao from '../dao/ADao'
 
 export default class TestDao {
   public Address: Address = {
-    zipCod: 13088340,
+    postalCode: '13088340',
     street: 'Av. Herminia de Andrade Coulto e Silva',
     num: '188',
     complement: 'SpazioRD',
@@ -18,11 +18,26 @@ export default class TestDao {
     phone: '19999991155'
   }
 
-  public Professional: Professional = {
+  public Customer: Customer= {
     name: 'Raphael',
     lastName: 'Silva do Nascimneto',
     dateBirth: new Date('1988-10-01'),
-    img: '/imagens/perfil-de-avatar.jpg',
+    img: '/imagens/profile-de-avatar.jpg',
+    cpf: '05214693218',
+    address: this.Address,
+    addressId: this.Address.id,
+    contact: this.Contact,
+    contactId: this.Contact.id
+  }
+
+  public Professional: Professional = {
+    name: this.Customer.name,
+    lastName: this.Customer.lastName,
+    dateBirth: this.Customer.dateBirth,
+    img: this.Customer.img,
+    cpf: this.Customer.cpf,
+    customerId: this.Customer.id,
+    cnpj: '10623708000152',
     address: this.Address,
     addressId: this.Address.id,
     contact: this.Contact,
@@ -32,14 +47,14 @@ export default class TestDao {
 
   public Commerce: Commerce = {
     name: 'SpazioRD',
-    img: '/imagens/perfil-de-avatar.jpg',
+    img: '/imagens/profile-de-avatar.jpg',
     address: this.Address,
     addressId: this.Address.id,
     contact: this.Contact,
     contactId: this.Contact.id
   }
 
-  public Perfil: Perfil = {
+  public Profile: Profile = {
     commerce: this.Commerce,
     commerceId: this.Commerce.id,
     professional: this.Professional,
@@ -50,8 +65,8 @@ export default class TestDao {
     userName: 'raphael',
     password: '123',
     actived: true,
-    perfil: this.Perfil,
-    perfilId: this.Perfil.id
+    profile: this.Profile,
+    profileId: this.Profile.id
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -64,33 +79,37 @@ export default class TestDao {
 
   private daoAddress: AddressDao
   private daoContact: ContactDao
+  private daoCustomer: CustomerDao
   private daoProfessional: ProfessionalDao
   private daoCommerce: CommerceDao
-  private daoPerfil: PerfilDao
+  private daoProfile: ProfileDao
   private daoUser: UserDao
 
   constructor () {
     this.daoAddress = new AddressDao()
     this.daoContact = new ContactDao()
+    this.daoCustomer = new CustomerDao()
     this.daoProfessional = new ProfessionalDao()
     this.daoCommerce = new CommerceDao()
-    this.daoPerfil = new PerfilDao()
+    this.daoProfile = new ProfileDao()
     this.daoUser = new UserDao()
   }
 
   public testInsertData = async (): Promise<void> => {
     const savedAddress = await this.testInsert<Address>(this.Address, this.daoAddress, 'Address')
     const savedContact = await this.testInsert<Contact>(this.Contact, this.daoContact, 'Contact')
+    const savedCustomer = await this.testInsert<Customer>(this.Customer, this.daoCustomer, 'Customer')
+    this.Professional.customerId = savedCustomer.id
     this.Professional.addressId = savedAddress.id
     this.Professional.contactId = savedContact.id
     const savedProfessional = await this.testInsert<Professional>(this.Professional, this.daoProfessional, 'Professional')
     this.Commerce.addressId = savedAddress.id
     this.Commerce.contactId = savedContact.id
     const savedCommerce = await this.testInsert<Commerce>(this.Commerce, this.daoCommerce, 'Commerce')
-    this.Perfil.professionalId = savedProfessional.id
-    this.Perfil.commerceId = savedCommerce.id
-    const savedPerfil = await this.testInsert<Perfil>(this.Perfil, this.daoPerfil, 'Perfil')
-    this.User.perfilId = savedPerfil.id
+    this.Profile.professionalId = savedProfessional.id
+    this.Profile.commerceId = savedCommerce.id
+    const savedProfile = await this.testInsert<Profile>(this.Profile, this.daoProfile, 'Profile')
+    this.User.profileId = savedProfile.id
     const savedUser = await this.testInsert<User>(this.User, this.daoUser, 'User')
     console.assert(savedUser.id, '[testInsertData] UserId is not assign')
   }
@@ -99,8 +118,8 @@ export default class TestDao {
     const fetchUser = await this.daoUser.fetchById(this.User.id)
     TestDao.validateObj(this.User, fetchUser, 'fetchUser')
 
-    const fetchPerfil = await this.daoPerfil.fetchById(this.Perfil.id)
-    TestDao.validateObj(this.Perfil, fetchPerfil, 'fetchPerfil')
+    const fetchProfile = await this.daoProfile.fetchById(this.Profile.id)
+    TestDao.validateObj(this.Profile, fetchProfile, 'fetchProfile')
 
     const fetchProfessional = await this.daoProfessional.fetchById(this.Professional.id)
     TestDao.validateObj(this.Professional, fetchProfessional, 'fetchProfessional')
@@ -119,8 +138,8 @@ export default class TestDao {
     const removedUser = await this.daoUser.deleteData(this.User)
     console.assert(removedUser.id === 0, '@testRemoveById[removedUser]')
 
-    const removedPerfil = await this.daoPerfil.deleteData(this.Perfil)
-    console.assert(removedPerfil.id === 0, '@testRemoveById[removedPerfil]')
+    const removedProfile = await this.daoProfile.deleteData(this.Profile)
+    console.assert(removedProfile.id === 0, '@testRemoveById[removedProfile]')
 
     const removedProfessional = await this.daoProfessional.deleteData(this.Professional)
     console.assert(removedProfessional.id === 0, '@testRemoveById[removedProfessional]')
@@ -150,7 +169,7 @@ export default class TestDao {
   static validateObj = (data1: any, data2: any, clazz: string): void => {
     // console.assert(data === savedData, '@validateObj[' + clazz + ']
     // Instance is not equal[\n' + JSON.stringify(data) + '\n] != [\n' + JSON.stringify(savedData) + ']')
-    const vObj = Reflect.ownKeys(data1)
+    const vObj = Reflect.ownKeys(data2)
     for (const key of vObj) {
       const v1 = Reflect.get(data1, key)
       const v2 = Reflect.get(data2, key)
@@ -158,57 +177,5 @@ export default class TestDao {
         '@validateObj[' + clazz + '] Property [' + key.toString() +
         '] is -\t-\t-\t-\t-> [' + v1 + '] != [' + v2 + ']')
     }
-  }
-
-  public user2: User = {
-    userName: 'raphael',
-    password: '123',
-    actived: true,
-    perfil: {
-      commerce: {
-        name: 'SpazioRD',
-        img: '/imagens/perfil-de-avatar.jpg',
-        address: {
-          zipCod: 13088340,
-          street: 'Av. Herminia de Andrade Coulto e Silva',
-          num: '188',
-          complement: 'SpazioRD',
-          district: 'Pq. São Quirino',
-          city: 'Campinas',
-          state: 'São Paulo',
-          id: 71
-        },
-        addressId: 71,
-        contact: { eMail: 'eng.raphaelsn@gmail.com', phone: '19999991155', id: 70 },
-        contactId: 70,
-        id: 3
-      },
-      commerceId: 3,
-      professional: {
-        name: 'Raphael',
-        lastName: 'Silva do Nascimneto',
-        dateBirth: new Date('1988-10-05'),
-        img: '/imagens/perfil-de-avatar.jpg',
-        address: {
-          zipCod: 13088340,
-          street: 'Av. Herminia de Andrade Coulto e Silva',
-          num: '188',
-          complement: 'SpazioRD',
-          district: 'Pq. São Quirino',
-          city: 'Campinas',
-          state: 'São Paulo',
-          id: 71
-        },
-        addressId: 71,
-        contact: { eMail: 'eng.raphaelsn@gmail.com', phone: '19999991155', id: 70 },
-        contactId: 70,
-        isAddressShowed: true,
-        id: 61
-      },
-      professionalId: 61,
-      id: 2
-    },
-    perfilId: 2,
-    id: 2
   }
 }

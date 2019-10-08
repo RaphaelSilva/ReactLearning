@@ -1,10 +1,8 @@
 import ADao from './ADao'
 import {
   Product, ProductType, Local, Profile, Professional,
-  Address,
-  Contact,
-  Commerce,
-  User
+  Address, Contact, Commerce, User, Customer, Payment,
+  Cart, Order, OrderItem
 } from '../entities/IEntities'
 
 export class AddressDao extends ADao<Address> {
@@ -19,18 +17,31 @@ export class ContactDao extends ADao<Contact> {
   }
 }
 
-export class ProfessionalDao extends ADao<Professional> {
+export class CustomerDao extends ADao<Customer> {
   constructor () {
-    super('professional', ['name', 'lastName', 'dateBirth', 'img',
-      'isAddressShowed', 'addressId', 'contactId'])
+    super('customer', ['name', 'lastName', 'dateBirth', 'img',
+      'cpf', 'addressId', 'contactId'])
+  }
+}
+
+export class ProfessionalDao extends ADao<Professional> {
+  public joinded = ' join customer on customer.id = professional.customerId'
+
+  constructor () {
+    super('professional',
+      ['customerId', 'img', 'cnpj', 'isAddressShowed', 'addressId', 'contactId'])
+  }
+
+  protected buildSelect (fields?: Array<string>): string {
+    return super.buildSelect(fields) + this.joinded
   }
 
   public fetchByProfileId (profileId: number): Promise<string> {
-    let sql = this.buildSelect()
-    sql += ' join profile on professional.id = profile.professionalId'
-    sql += ' left join contact on professional.contactId = contact.id'
-    sql += ' left join address on professional.addressId = address.id'
-    sql += ' where profile.id = ?'
+    const sql = this.buildSelect() +
+      ' join profile on professional.id = profile.professionalId' +
+      ' left join contact on professional.contactId = contact.id' +
+      ' left join address on professional.addressId = address.id' +
+      ' where profile.id = ?'
     return this.getResult<string>({
       sql: sql,
       values: [profileId]
@@ -39,7 +50,7 @@ export class ProfessionalDao extends ADao<Professional> {
 
   public fetchByName (name: string): Promise<Professional> {
     return this.getResult<Professional>({
-      sql: this.selectWhere('name = ?'),
+      sql: this.selectWhere('customer.name = ?'),
       values: [name]
     })
   }
@@ -84,8 +95,8 @@ export class ProductTypeDao extends ADao<ProductType> {
 
 export class ProductDao extends ADao<Product> {
   constructor () {
-    super('product', ['name', 'description', 'value', 'tagLink', 'registerDate',
-      'productTypeId', 'profileId'])
+    super('product', ['name', 'description', 'img', 'readMore', 'tagLink',
+      'registerDate', 'productTypeId', 'profileId'])
   }
 
   public fetchByTag (tagLink: string): Promise<Product> {
@@ -93,5 +104,32 @@ export class ProductDao extends ADao<Product> {
       sql: this.selectWhere('tagLink = ?'),
       values: [tagLink]
     })
+  }
+}
+
+export class PaymentDao extends ADao<Payment> {
+  constructor () {
+    super('payment', ['id', 'name', 'description', 'value', 'productId'])
+  }
+}
+
+export class CartDao extends ADao<Cart> {
+  constructor () {
+    super('cart', ['id', 'info', 'status', 'listIdItens', 'createReg',
+      'customerId'])
+  }
+}
+
+export class OrderDao extends ADao<Order> {
+  constructor () {
+    super('Order', ['id', 'paymentMethod', 'customerId', 'cartId',
+      'subTotal', 'status'])
+  }
+}
+
+export class OrderItemDao extends ADao<OrderItem> {
+  constructor () {
+    super('OrderItem', ['id', 'checkoutId', 'paymentId', 'productId',
+      'customerId', 'isRecurrence', 'quantity'])
   }
 }

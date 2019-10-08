@@ -49,7 +49,7 @@ export default class MemberLoginController {
       this.userDao.fetchUser(userName).then((user) => {
         const userAuth = new UserAuth(user, password, UserAuth.getAddressIp(req))
         if (userAuth.isAuthenticated) {
-          userAuth.perfilId = user.perfilId
+          userAuth.profileId = user.profileId
           userAuth.route = this.pathRouterGetUserAuth
           userAuth.filePath = OpenFile.path
           OpenFile.write<UserAuth>(userAuth.getFullPath(), userAuth)

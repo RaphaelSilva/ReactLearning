@@ -43,12 +43,13 @@ export default class ADao<K extends EntitiId> {
     return new Promise<T>(
       (resolve, reject) => {
         ADao.pool.getConnection((errCon, connection) => {
-          if (errCon) reject(errCon)
-          connection.query(query, (err, rows: queryCallback) => {
-            if (ADao.debug) console.log(rows)
-            exec(err, rows, resolve, reject)
-            connection.destroy()
-          })
+          if (errCon) { reject(errCon) } else {
+            connection.query(query, (err, rows: queryCallback) => {
+              if (ADao.debug) console.log(rows)
+              exec(err, rows, resolve, reject)
+              connection.destroy()
+            })
+          }
         })
       })
   }
@@ -57,9 +58,10 @@ export default class ADao<K extends EntitiId> {
     /* parser function for specialization */ parser?: (data: any) => T): Promise<T> {
     if (ADao.debug) console.log(query)
     return this.executeQuery<T>(query, (err, rows: queryCallback, resolve: (value?: T) => void, reject: any) => {
-      if (err || rows.length > 1) reject(err)
-      if (rows.length < 1) {
-        resolve(null)
+      if (err || rows.length > 1) {
+        reject(err)
+      } else if (rows.length < 1) {
+        reject(new Error('Consulta com mais de 1 item'))
       } else {
         resolve(parser ? parser(rows[0])
           : rows[0] as T)
@@ -139,7 +141,7 @@ export default class ADao<K extends EntitiId> {
 
   public fetchById (id: number): Promise<K> {
     return this.getResult<K>({
-      sql: this.selectWhere('id = ?'),
+      sql: this.selectWhere(this.table + '.id = ?'),
       values: [id]
     })
   }

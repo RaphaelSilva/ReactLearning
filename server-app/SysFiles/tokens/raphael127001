@@ -1,1 +1,1 @@
-{"name":"raphael","isAuthenticated":true,"addressIp":"127.0.0.1","perfilId":1,"route":"/api/getUserAuth","filePath":"./SysFiles/tokens/","fileName":"raphael127001"}
+{"name":"raphael","isAuthenticated":true,"addressIp":"127.0.0.1","profileId":1,"route":"/api/getUserAuth","filePath":"./SysFiles/tokens/","fileName":"raphael127001"}

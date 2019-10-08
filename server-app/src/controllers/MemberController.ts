@@ -14,7 +14,7 @@ export default class MemberController extends AController {
       MemberLoginController.instance.isUserAuth,
       this.instance.findProfessionalByTag
     ])
-    app.post('/api/member/getProfessional', [
+    app.get('/api/member/getProfessional', [
       MemberLoginController.instance.isUserAuth,
       this.instance.findProfessionalByTag
     ])
@@ -55,10 +55,11 @@ export default class MemberController extends AController {
     if (req.userAuth) {
       this.professionalDao.fetchByProfileId(req.userAuth.profileId)
         .then((professional) => {
+          console.log(professional)
           res.json(professional)
         }).catch((error) => { this.sendError(res, error, '') })
     } else {
-
+      this.sendError(res, new Error('Tem que estar logado Falha critica'))
     }
   }
 }

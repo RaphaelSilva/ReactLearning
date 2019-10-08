@@ -17,11 +17,21 @@ export interface Contact extends EntitiId{
     eMail: string;
 }
 
-export interface Professional extends EntitiId{
+export interface Customer extends EntitiId{
     name: string;
     lastName: string;
     dateBirth: Date;
     img: string;
+    cpf: string;
+    address: Address;
+    addressId: number;
+    contact: Contact;
+    contactId: number;
+}
+
+export interface Professional extends Customer{
+    cnpj: string;
+    customerId: number;
     isAddressShowed: boolean;
     address: Address;
     addressId: number;
@@ -70,7 +80,8 @@ export interface ProductType extends EntitiId{
 export interface Product extends EntitiId{
     name: string;
     description: string;
-    value: number;
+    img: string;
+    readMore: string;
     tagLink: string;
     registerDate: Date;
     productTypeId: number;

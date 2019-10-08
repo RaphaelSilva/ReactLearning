@@ -1,7 +1,6 @@
 import { Request, Response, Application } from 'express'
 import ProductSaleRepository from './ProductSaleRepository'
 import { AController } from './AController'
-import ADao from '../dao/ADao'
 
 export default class ProductSaleController extends AController {
   static instance: ProductSaleController
@@ -24,7 +23,6 @@ export default class ProductSaleController extends AController {
   }
 
   private getProductToSale = (req: Request, res: Response): void => {
-    ADao.debug = true
     if (req.params.productTag) {
       this.productSaleRepository.getProductToSale(req.params.productTag)
         .then((productToSale) => {

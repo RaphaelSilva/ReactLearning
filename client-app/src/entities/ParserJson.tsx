@@ -1,4 +1,4 @@
-import { Professional, Address, Contact, Profile, Commerce, Product } from "./DBEntities"
+import { Professional, Address, Contact, Profile, Commerce, Product, Customer } from "./DBEntities"
 
 export function ParseAddress(data?: any): Address {
     return {
@@ -21,15 +21,33 @@ export function ParseContact(data?: any): Contact {
     }
 }
 
+export function ParseCostumer(data?: any): Customer {
+    return {
+        id: data ? (data as Customer).id || 0 : 0,
+        name: data ? (data as Customer).name || '' : '',
+        lastName: data ? (data as Customer).lastName || '' : '',
+        img: data ? (data as Customer).img || '' : '',
+        contactId: data ? (data as Customer).contactId || 0 : 0,
+        addressId: data ? (data as Customer).addressId || 0 : 0,
+        dateBirth: data ? (data as Customer).dateBirth || '' : new Date(),
+        cpf: data ? (data as Customer).cpf || '' : '',
+        address: ParseAddress(data),
+        contact: ParseContact(data)
+    }
+}
+
 export function ParseProfessional(data?: any): Professional {
     return {
         id: data ? (data as Professional).id || 0 : 0,
+        customerId: data ? (data as Professional).customerId || 0 : 0,
         name: data ? (data as Professional).name || '' : '',
         lastName: data ? (data as Professional).lastName || '' : '',
         img: data ? (data as Professional).img || '' : '',
         contactId: data ? (data as Professional).contactId || 0 : 0,
         addressId: data ? (data as Professional).addressId || 0 : 0,
         dateBirth: data ? (data as Professional).dateBirth || '' : new Date(),
+        cpf: data ? (data as Professional).cpf || '' : '',
+        cnpj: data ? (data as Professional).cnpj || '' : '',
         isAddressShowed: data ? (data as Professional).isAddressShowed ? true : false || false : false,
         address: ParseAddress(data),
         contact: ParseContact(data)
@@ -60,7 +78,8 @@ export function ParseProduct(data?: any): Product {
     return {
     name: data ? (data as Product).name || '' : '',
     description: data ? (data as Product).description || '' : '',
-    value: data ? (data as Product).value || 0 : 0,
+    img: data ? (data as Product).img || '' : '',
+    readMore: data ? (data as Product).readMore || '' : '',
     tagLink: data ? (data as Product).tagLink || '' : '',
     registerDate: data ? (data as Product).registerDate || '' : new Date(),
     productTypeId: data ? (data as Product).productTypeId || 0 : 0,
