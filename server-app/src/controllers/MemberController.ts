@@ -1,7 +1,7 @@
 import { Request, Response, Application } from 'express'
 import MemberLoginController from './LoginController'
 import { ProfessionalDao, AddressDao, ContactDao } from '../dao/EntitiesDao'
-import { Professional } from '../entities/IEntities'
+import { Professional } from '../models/Entities'
 import { AController } from './AController'
 
 export default class MemberController extends AController {
@@ -55,7 +55,6 @@ export default class MemberController extends AController {
     if (req.userAuth) {
       this.professionalDao.fetchByProfileId(req.userAuth.profileId)
         .then((professional) => {
-          console.log(professional)
           res.json(professional)
         }).catch((error) => { this.sendError(res, error, '') })
     } else {

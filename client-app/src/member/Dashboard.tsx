@@ -115,7 +115,7 @@ export default function Dashboard(props: Readonly<ISecurityComponet>) {
   const menuList: MenuList = [
     { label: 'Dashboard', icon: 'dashboard', link: '/member/Dashboard' },
     { label: 'Perfil', icon: 'account_circle', link: '/member/Perfil' },
-    { label: 'Serviço & Produto', icon: 'work', link: '/member/Serviço' },
+    { label: 'Serviço & Produto', icon: 'work', link: '/member/ProductsServices' },
     { label: 'Pedidos', icon: 'shopping_cart', link: '/member/Pedidos' },
     { label: 'Clientes', icon: 'people', link: '/member/Clientes' },
     { label: 'Integração', icon: 'layers', link: '/member/Integração' },

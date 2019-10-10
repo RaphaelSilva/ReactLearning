@@ -8,7 +8,8 @@
       "start": "ts-node src/index.ts",
       "dev": "nodemon src/index.ts",
       "build": "dev",
-      "test": "nodemon src/test/test.ts",
+      "test": "sucrase-node src/test/test.ts",
+      "testScript": "sucrase-node src/test/t.ts",
       "planb": "tsc --build --watch --init; node --inspect dist/"
    },
    "devDependencies": {
@@ -30,9 +31,11 @@
       "typescript": "3.3.3333"
    },
    "dependencies": {
+      "@types/formidable": "^1.0.31",
       "body-parser": "^1.19.0",
       "cors": "^2.8.5",
       "express": "^4.17.1",
+      "formidable": "^1.2.1",
       "mysql": "^2.14.1",
       "reflect-metadata": "^0.1.10",
       "typeorm": "0.2.19",

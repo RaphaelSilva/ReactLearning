@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { QueryOptions, queryCallback, createPool } from 'mysql'
-import { EntitiId } from '../entities/IEntities'
+import { EntitiId } from '../models/Entities'
 
 interface ResultQuery {
   fieldCount: number;
@@ -25,16 +25,17 @@ export default class ADao<K extends EntitiId> {
   })
 
   static debug = false
-  protected table: string
-  protected fields: Array<string>
+  public table: string
+  public fields: string
 
-  constructor (table: string, fields?: Array<string>) {
+  constructor (table: string, fields?: string) {
     this.table = table
-    this.fields = fields || []
+    this.fields = fields
   }
 
-  protected selectWhere (clause: string, fields?: Array<string>): string {
-    return this.buildSelect(fields) + ' where ' + clause
+  protected selectWhere (clause: string, fields?: string): string {
+    const select = this.buildSelect(fields) + this.fromTable()
+    return select + ' where ' + clause
   }
 
   protected executeQuery<T> (query: QueryOptions,
@@ -44,7 +45,7 @@ export default class ADao<K extends EntitiId> {
       (resolve, reject) => {
         ADao.pool.getConnection((errCon, connection) => {
           if (errCon) { reject(errCon) } else {
-            connection.query(query, (err, rows: queryCallback) => {
+            connection.query(query, (err, rows: queryCallback | ResultQuery) => {
               if (ADao.debug) console.log(rows)
               exec(err, rows, resolve, reject)
               connection.destroy()
@@ -98,24 +99,53 @@ export default class ADao<K extends EntitiId> {
       if (err) {
         reject(err)
       } else {
-        obj.id = 0
-        resolve(obj)
+        resolve(null)
       }
     })
   }
 
-  protected buildSelect (fields?: Array<string>): string {
-    let select = 'select '
-    select += fields && fields.length > 0 ? fields.toString() : '*'
-    select += ' from ' + this.table
-    return select
+  public concatTableFields (fields?: string): string {
+    if (fields) {
+      const mTable = this.table + '.'
+      const nField = mTable + fields.replace(/,/g, ',' + mTable)
+      return nField
+    } else {
+      return '*'
+    }
   }
 
-  protected buildInsertInto (fields: Array<string>): string {
+  protected buildSelect (fields?: string): string {
+    return 'select ' + this.concatTableFields(fields)
+  }
+
+  protected fromTable (): string {
+    return ' from ' + this.table
+  }
+
+  protected getObjSqlFields (obj: K, fields: string): K {
+    const aFields = fields.split(',')
+    const cObj = {}
+    aFields.forEach(field => {
+      cObj[field] = Reflect.get(obj, field)
+    })
+    return cObj as K
+  }
+
+  protected getObjValuesFields (obj: K, fields: string) {
+    const flds = fields.split(',')
+    const vls = [flds.length]
+    for (let i = 0; i < flds.length; i++) {
+      vls[i] = Reflect.get(obj, flds[i])
+    }
+    return vls
+  }
+
+  protected buildInsertInto (fields: string): string {
     let insert = 'insert into ' + this.table
-    insert += ' (' + fields.toString() + ')'
+    insert += ' (' + fields + ')'
     insert += ' values ( '
-    for (let i = 0; i < fields.length - 1; i++) {
+    const flds = fields.split(',')
+    for (let i = 0; i < flds.length - 1; i++) {
       insert += '?, '
     }
     insert += '? ) '
@@ -126,8 +156,9 @@ export default class ADao<K extends EntitiId> {
     return 'delete from ' + this.table + ' where ' + cls
   }
 
-  public list (parse?: Function): Promise<Array<K>> {
-    return this.getResults<K>({ sql: this.buildSelect(this.fields) }, parse)
+  public list = (parse?: Function): Promise<Array<K>> => {
+    const select = this.buildSelect(this.fields) + this.fromTable()
+    return this.getResults<K>({ sql: select }, parse)
   }
 
   public fetchBy (
@@ -146,14 +177,10 @@ export default class ADao<K extends EntitiId> {
     })
   }
 
-  public newData (obj: K): Promise<K> {
-    const vls = [this.fields.length]
-    for (let i = 0; i < this.fields.length; i++) {
-      vls[i] = Reflect.get(obj, this.fields[i])
-    }
+  public add (obj: K): Promise<K> {
     return this.insertData(obj, {
-      sql: this.buildInsertInto(this.fields),
-      values: vls
+      sql: 'insert into ' + this.table + ' set ?',
+      values: this.getObjSqlFields(obj, this.fields)
     })
   }
 
@@ -161,6 +188,21 @@ export default class ADao<K extends EntitiId> {
     return this.removeData(obj, {
       sql: this.buildDelete(),
       values: [obj.id]
+    })
+  }
+
+  public deleteAll = (): Promise<K> => {
+    return this.removeData(null, {
+      sql: this.buildDelete('id > 0')
+    })
+  }
+
+  public getComplexlist<N> (cls: string, parans: any, nfields: string, nTable: string): Promise<Array<N>> {
+    const select = this.buildSelect(this.fields) + ',' + nfields +
+    this.fromTable() + ', ' + nTable + ' where ' + cls
+    return this.getResults<N>({
+      sql: select,
+      values: parans
     })
   }
 }

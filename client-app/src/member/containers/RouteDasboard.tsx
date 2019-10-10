@@ -2,6 +2,7 @@ import React, { Component, Suspense } from 'react'
 import { Route, Switch } from 'react-router-dom';
 import SecurityComponet, { ISecurityComponet } from '../../component/SecurityComponet';
 import BodyPerfil from './BodyPerfil';
+import BodyProductService from './BodyProductService';
 const BodyDashboard = React.lazy(() => import('./BodyDasboard'))
 
 export default class RouteDasboard extends Component<ISecurityComponet> {
@@ -13,6 +14,14 @@ export default class RouteDasboard extends Component<ISecurityComponet> {
                     <SecurityComponet {...p} {...this.props}>
                         <Suspense fallback={<div>Loding.......</div>}>
                             <BodyPerfil {...p} {...this.props} />
+                        </Suspense>
+                    </SecurityComponet>
+                } />
+
+                <Route path='/member/ProductsServices' render={(p) =>
+                    <SecurityComponet {...p} {...this.props}>
+                        <Suspense fallback={<div>Loding.......</div>}>
+                            <BodyProductService {...p} {...this.props} />
                         </Suspense>
                     </SecurityComponet>
                 } />

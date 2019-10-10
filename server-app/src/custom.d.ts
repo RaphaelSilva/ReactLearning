@@ -1,4 +1,4 @@
-import UserAuth from './entities/UserAuth'
+import UserAuth from './models/UserAuth'
 import Cookies from 'universal-cookie'
 
 declare module 'express' {

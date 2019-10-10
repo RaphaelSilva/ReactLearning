@@ -7,6 +7,7 @@ class App {
     public exp: Application
 
     public constructor () {
+      console.clear()
       this.exp = express()
       this.middlewares()
     }

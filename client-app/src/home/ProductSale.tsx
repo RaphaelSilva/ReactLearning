@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { fetchGet } from '../utils/FUtil'
 import { Container } from '@material-ui/core'
-import { ProductToSale } from '../entities/ViewEntities'
-import { ParseProfessional, ParseProfile, ParseProduct } from '../entities/ParserJson'
+import { ProductToSale } from '../models/ViewModels'
+import { ParseProfessional, ParseProfile, ParseProduct } from '../models/ParserJson'
 import ServicePage from './template/ServicePage'
 
 interface IndexResult {

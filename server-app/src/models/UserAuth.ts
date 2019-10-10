@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { User } from './IEntities'
+import { User } from './Entities'
 
 export default class UserAuth {
   public name: string

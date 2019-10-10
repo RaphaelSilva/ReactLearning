@@ -1,11 +1,5 @@
-import { ProfessionalDao, AddressDao, ContactDao, ProductDao, ProfileDao } from '../dao/EntitiesDao'
-import { Product, Profile, Professional } from '../entities/IEntities'
-
-export interface ProductToSale {
-    product: Product;
-    profile: Profile;
-    professional: Professional;
-}
+import { ProfessionalDao, AddressDao, ContactDao, ProductDao, ProfileDao } from '../../dao/EntitiesDao'
+import { ProductToSale } from '../../models/ViewModels'
 
 export default class ProductSaleRepository {
     public professionalDao: ProfessionalDao

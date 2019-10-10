@@ -10,10 +10,11 @@ DROP TABLE IF EXISTS `sysUser`;
 DROP TABLE IF EXISTS `local`;
 DROP TABLE IF EXISTS `productType`;
 DROP TABLE IF EXISTS `product`;
+DROP TABLE IF EXISTS `productInfo`;
 DROP TABLE IF EXISTS `payment`;
 DROP TABLE IF EXISTS `cart`;
-DROP TABLE IF EXISTS `Order`;
-DROP TABLE IF EXISTS `OrderItem`;
+DROP TABLE IF EXISTS `sOrder`;
+DROP TABLE IF EXISTS `sOrderItem`;
 
 CREATE TABLE `address` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -51,7 +52,7 @@ DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE `professional` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `customerId` VARCHAR(20) NULL,
+  `customerId` INT NULL,
   -- it can be same of the customer table at creation
   `img` VARCHAR(100) NULL,
   `cnpj` VARCHAR(14) NULL,
@@ -113,12 +114,22 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE `product` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
-  `description` VARCHAR(80) NULL,
+  `description` VARCHAR(120) NULL,
+  `img` VARCHAR(100) NULL,
   `readMore` TEXT NULL, -- If it isn't a good ideia do it in a file
   `tagLink` VARCHAR(64) NULL, -- This columm can be indexed by tag too
   `registerDate` DATE NULL,
   `productTypeId` INT NULL,
   `profileId` INT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE `productInfo` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `productId` INT NULL,
+  `description` VARCHAR(80) NULL,
+  `img` VARCHAR(100) NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -147,7 +158,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 -- If some item were a recurrence then split it to a new checkout
-CREATE TABLE `order` (
+CREATE TABLE `sOrder` (
   `id` INT NOT NULL AUTO_INCREMENT,
   -- credcard, debtcard, bitcoins, _boleto_
   `paymentMethod` CHAR(8) NULL,
@@ -160,7 +171,7 @@ CREATE TABLE `order` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE `orderItem` (
+CREATE TABLE `sOrderItem` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `checkoutId` INT NULL,
   `paymentId` INT NULL,
@@ -174,40 +185,3 @@ CREATE TABLE `orderItem` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---
---

@@ -1,6 +1,6 @@
 import { Request, Response, Application } from 'express'
-import ProductSaleRepository from './ProductSaleRepository'
 import { AController } from './AController'
+import ProductSaleRepository from './repository/ProductSaleRepository'
 
 export default class ProductSaleController extends AController {
   static instance: ProductSaleController

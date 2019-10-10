@@ -6,14 +6,15 @@ import {
 } from '@material-ui/core'
 import clsx from 'clsx';
 import { fetchPost, fetchGet } from '../../utils/FUtil';
-import { Professional, Contact, Address } from '../../entities/DBEntities';
-import { ParseProfessional } from '../../entities/ParserJson';
+import { Professional, Contact, Address } from '../../models/DBEntities';
+import { ParseProfessional } from '../../models/ParserJson';
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import ptBR from "date-fns/locale/pt-BR";
+import UploadFileModal from '../../component/UploadFileModal';
 
 interface IBodyPerfil extends ISecurityComponet {
     match: {
@@ -66,8 +67,7 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
         })
     }, [])
 
-    const [professional, setProfessional] = useState(ParseProfessional())
-
+    const [professional, setProfessional] = useState<Professional>(ParseProfessional())
     const [address, setAddress] = useState({
         city: '', complement: '', district: '', num: '',
         state: '', street: '', postalCode: ''
@@ -85,7 +85,6 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
         console.log(professional)
         const result = await fetchPost<string>('/api/member/updateProfessional', JSON.stringify(professional))
         console.log(result)
-
     }
 
     const handleInputChangeProfessional = (e: ChangeEvent<HTMLInputElement>) => {
@@ -120,6 +119,11 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
         professional.dateBirth = date == null ? new Date() : date
         setProfessional({ ...professional })
     };
+
+    const handleImageChange = (img: string) => {
+        professional.img = img
+        setProfessional({ ...professional })
+    }
 
     return (
         <form className={classes.form} onSubmit={handleSubmit} noValidate>
@@ -169,7 +173,10 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                 <Grid item xs={12} md={6} lg={4}>
                     <Typography component="h1" variant="h5"> Imagem </Typography>
                     <Paper className={clsx(classes.paper, classes.professional)} >
-                        <Avatar alt="Remy Sharp" src={professional.img} className={classes.bigAvatar} />
+                        <UploadFileModal onChange={handleImageChange} >
+                            <p>Click para alterar a imagem</p>
+                            <Avatar alt="Remy Sharp" src={professional.img} className={classes.bigAvatar} />
+                        </UploadFileModal>
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>

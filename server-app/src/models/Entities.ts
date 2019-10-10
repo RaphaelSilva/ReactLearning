@@ -31,12 +31,12 @@ export interface Customer extends EntitiId{
 
 export interface Professional extends Customer{
     cnpj: string;
-    customerId: number;
     isAddressShowed: boolean;
     address: Address;
     addressId: number;
     contact: Contact;
     contactId: number;
+    customerId: number;
 }
 
 export interface Commerce extends EntitiId{
@@ -84,6 +84,7 @@ export interface Product extends EntitiId{
     readMore: string;
     tagLink: string;
     registerDate: Date;
+    productType: ProductType;
     productTypeId: number;
     profileId: number;
 }

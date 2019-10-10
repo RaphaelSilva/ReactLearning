@@ -1,6 +1,6 @@
 import { Response, Application, Request } from 'express'
-import OpenFile from '../ossystem/OpenFile'
-import UserAuth from '../entities/UserAuth'
+import OpenFile from '../utils/OpenFile'
+import UserAuth from '../models/UserAuth'
 import { UserDao } from '../dao/EntitiesDao'
 
 export default class MemberLoginController {
@@ -56,7 +56,7 @@ export default class MemberLoginController {
           const jsonUserAuth = JSON.stringify(userAuth)
           req.universalCookies.set(MemberLoginController.cookieName, jsonUserAuth, {
             path: '/',
-            maxAge: 30 * 60 * 1000
+            maxAge: 30 * 60
           }) // expires in 30 minutes
           res.json(jsonUserAuth)
         } else this.sendLoginError(res, 'Usuario ou senha estão errados')
