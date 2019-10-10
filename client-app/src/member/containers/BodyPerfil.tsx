@@ -68,15 +68,15 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
     }, [])
 
     const [professional, setProfessional] = useState<Professional>(ParseProfessional())
-    const [address, setAddress] = useState({
+    const [address, setAddress] = useState<Address>({
         city: '', complement: '', district: '', num: '',
         state: '', street: '', postalCode: ''
-    } as Address)
+    })
 
-    const [contact, setContact] = useState({
+    const [contact, setContact] = useState<Contact>({
         eMail: '',
         phone: ''
-    } as Contact)
+    })
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()

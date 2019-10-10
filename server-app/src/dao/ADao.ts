@@ -197,9 +197,8 @@ export default class ADao<K extends EntitiId> {
     })
   }
 
-  public getComplexlist<N> (cls: string, parans: any, nfields: string, nTable: string): Promise<Array<N>> {
-    const select = this.buildSelect(this.fields) + ',' + nfields +
-    this.fromTable() + ', ' + nTable + ' where ' + cls
+  public getComplexlist<N> (cls: string, parans: any, nfields: string, relation: string): Promise<Array<N>> {
+    const select = `${this.buildSelect(this.fields)},${nfields} ${this.fromTable()} ${relation} where ${cls}`
     return this.getResults<N>({
       sql: select,
       values: parans

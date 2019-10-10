@@ -14,6 +14,11 @@ export default class ProductServiceController extends AController {
         this.instance.listAll
       ])
 
+      app.get('/api/product/list/:text', [
+        MemberLoginController.instance.isUserAuth,
+        this.instance.findProducts
+      ])
+
       app.post('/api/product/addOne/:productTag', [
         this.instance.addOne
       ])
@@ -35,6 +40,19 @@ export default class ProductServiceController extends AController {
         }).catch((error) => {
           this.sendError(res, error)
         })
+    }
+
+    private findProducts = (req: Request, res: Response): void => {
+      if (req.params.text) {
+        this.productServiceRepository.findProducts(req.userAuth.profileId, req.params.text)
+          .then((productTyped) => {
+            res.json(productTyped)
+          }).catch((error) => {
+            this.sendError(res, error)
+          })
+      } else {
+        this.sendError(res, new Error('Url mau formada'), 'Url mau formada')
+      }
     }
 
     private addOne = (req: Request, res: Response): void => {
