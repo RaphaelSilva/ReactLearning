@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface OnChange {
-    onChange: (img: string) => void;
+    onPick: (img: string) => void;
     children?: ReactNode;
 }
 

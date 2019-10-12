@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import Container from '@material-ui/core/Container';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import React, { useState } from 'react'
+import clsx from 'clsx'
+import { makeStyles } from '@material-ui/core/styles'
+import Drawer from '@material-ui/core/Drawer'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import Divider from '@material-ui/core/Divider'
+import IconButton from '@material-ui/core/IconButton'
+import Badge from '@material-ui/core/Badge'
+import Container from '@material-ui/core/Container'
+import MenuIcon from '@material-ui/icons/Menu'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import NotificationsIcon from '@material-ui/icons/Notifications'
 
-import { CssBaseline } from '@material-ui/core';
-import RenderMenu from '../component/RenderMenu';
-import { MenuList } from '../utils/Menu';
-import { ISecurityComponet } from '../component/SecurityComponet';
-import RouteDasboard from './containers/RouteDasboard';
+import { CssBaseline } from '@material-ui/core'
+import RenderMenu from '../component/RenderMenu'
+import { MenuList } from '../utils/Menu'
+import { ISecurityComponet } from '../component/SecurityComponet'
+import RouteDasboard from './containers/RouteDasboard'
 
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -99,18 +99,22 @@ const useStyles = makeStyles(theme => ({
   fixedHeight: {
     height: 240,
   },
-}));
+}))
 
 export default function Dashboard(props: Readonly<ISecurityComponet>) {
-  const classes = useStyles();
-  const [open, setOpen] = useState(true);
+  const classes = useStyles()
+  const [open, setOpen] = useState(false)
 
   const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
   const handleDrawerClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
+
+  const menuOnClick = () => {
+    setOpen(false)
+  }
 
   const menuList: MenuList = [
     { label: 'Dashboard', icon: 'dashboard', link: '/member/Dashboard' },
@@ -152,7 +156,7 @@ export default function Dashboard(props: Readonly<ISecurityComponet>) {
         </div>
 
         <Divider />
-        <RenderMenu value={menuList} />
+        <RenderMenu value={menuList} onItemMenuClik={menuOnClick}/>
       </Drawer>
 
       <main className={classes.content}>

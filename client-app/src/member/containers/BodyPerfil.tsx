@@ -120,7 +120,7 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
         setProfessional({ ...professional })
     };
 
-    const handleImageChange = (img: string) => {
+    const handlePickImage = (img: string) => {
         professional.img = img
         setProfessional({ ...professional })
     }
@@ -173,7 +173,7 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                 <Grid item xs={12} md={6} lg={4}>
                     <Typography component="h1" variant="h5"> Imagem </Typography>
                     <Paper className={clsx(classes.paper, classes.professional)} >
-                        <UploadFileModal onChange={handleImageChange} >
+                        <UploadFileModal onPick={handlePickImage} >
                             <p>Click para alterar a imagem</p>
                             <Avatar alt="Remy Sharp" src={professional.img} className={classes.bigAvatar} />
                         </UploadFileModal>
