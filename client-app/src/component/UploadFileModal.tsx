@@ -25,7 +25,7 @@ export default function UploadFileModal(props: Readonly<OnChange>) {
                 labelTabs={["Upload de Imagens", "Todas as Imagens"]}
                 renderItens={[
                     <UploadFile onPick={handlePick} />,
-                    <p>Todas as Imagens</p>
+                    <p style={{height: '80vh'}}>Todas as Imagens</p>
                 ]} />
         </>
     )

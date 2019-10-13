@@ -111,11 +111,11 @@ export default function BodyProductService(props: Readonly<ISecurityComponet>) {
             </Grid>
         </Paper>
         <MyModal ref={refMyModal}
-            defaultTab={0}
+            defaultTab={0}            
             labelTabs={[`${product ? "Cadastrar" : "Atualizar"} Produto`, "Plano de pagamento"]}
             renderItens={[
                 <ProductUpdate product={product} onUpdate={onProductUpdate} />,
-                <p>Todas as Imagens</p>
+                <p style={{height: '80vh'}}>Todas as Imagens</p>
             ]} />
     </>
     )

@@ -1,17 +1,17 @@
 import React, { useState, ReactNode, forwardRef, useImperativeHandle } from 'react'
 import {
-    Fade, Modal, createStyles, makeStyles, Theme, Backdrop,
+    Fade, Modal, createStyles, makeStyles, Backdrop,
     Typography, Box, AppBar, Tab, Tabs, IconButton, Toolbar, Grid
 } from '@material-ui/core'
-import Close from '@material-ui/icons/Close';
+import Close from '@material-ui/icons/Close'
 
 interface IMyModal {
-    renderItens: Array<ReactNode>;
-    labelTabs: Array<string>;
-    defaultTab: number;
+    renderItens: Array<ReactNode>
+    labelTabs: Array<string>
+    defaultTab: number
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(theme =>
     createStyles({
         modal: {
             display: 'flex',
@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 0.5,
             backgroundColor: theme.palette.background.paper,
             boxShadow: theme.shadows[5],
-            height: '80vh',
         },
         toolbar: {
             padding: 2,
@@ -42,13 +41,13 @@ interface TabPanelProps {
 }
 
 interface TabPanelProps {
-    children?: React.ReactNode;
-    index: any;
-    value: any;
+    children?: React.ReactNode
+    index: any
+    value: any
 }
 
 function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
+    const { children, value, index, ...other } = props
 
     return (
         <Typography
@@ -59,16 +58,16 @@ function TabPanel(props: TabPanelProps) {
             aria-labelledby={`simple-tab-${index}`}
             {...other}
         >
-            <Box p={3}>{children}</Box>
+            <Box>{children}</Box>
         </Typography>
-    );
+    )
 }
 
 function a11yProps(index: any) {
     return {
         id: `simple-tab-${index}`,
         'aria-controls': `simple-tabpanel-${index}`,
-    };
+    }
 }
 
 const MyModal = forwardRef((props: Readonly<IMyModal>, ref) => {

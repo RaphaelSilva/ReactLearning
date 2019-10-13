@@ -19,7 +19,7 @@ export default class ProductServiceController extends AController {
         this.instance.findProducts
       ])
 
-      app.post('/api/product/addOne/:productTag', [
+      app.post('/api/product/save/:productTag', [
         this.instance.addOne
       ])
 
@@ -56,6 +56,8 @@ export default class ProductServiceController extends AController {
     }
 
     private addOne = (req: Request, res: Response): void => {
+      console.log('aqui')
+      
       res.json({ msg: 'success' })
     }
 }

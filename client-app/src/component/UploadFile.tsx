@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
         paper: {
             overflow: 'auto',
             padding: theme.spacing(2),
+            height: '80vh'
         },
         row: {
             display: 'flex',

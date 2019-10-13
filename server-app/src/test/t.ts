@@ -14,7 +14,10 @@ const exec = async (): Promise<void> => {
 
   const productTypes: Array<ProductType> = []
   for (let i = 0; i < 15; i++) {
-    productTypes.push({ name: gRS(gRI(3, 4), gRI(5, 13)).substring(0, 49), description: gRS(gRI(1, 3), gRI(5, 15)).substring(0, 79) })
+    const mField = 50
+    const nWords = gRI(3, 4)
+    const nLetter = mField / nWords
+    productTypes.push({ name: gRS(nWords, nLetter).substring(0, mField), description: gRS(gRI(1, 3), gRI(5, 15)).substring(0, 79) })
   }
 
   const products: Array<Product> = []
