@@ -1,7 +1,7 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react'
 import { ISecurityComponet } from '../../component/SecurityComponet'
 import {
-    Grid, Paper, makeStyles, Avatar, TextField, Button,
+    Grid, Paper, makeStyles, Avatar, Button,
     FormControlLabel, Switch, Typography
 } from '@material-ui/core'
 import clsx from 'clsx';
@@ -15,6 +15,7 @@ import {
 } from '@material-ui/pickers';
 import ptBR from "date-fns/locale/pt-BR";
 import UploadFileModal from '../../component/UploadFileModal';
+import FieldValidated from '../../component/FieldValidated';
 
 interface IBodyPerfil extends ISecurityComponet {
     match: {
@@ -52,7 +53,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const fetchProfessional = async (setting: (prof: Professional) => void) => {
-    const profJson = await fetchGet<string>('/api/member/getProfessional')    
+    const profJson = await fetchGet<string>('/api/member/getProfessional')
     setting(ParseProfessional(profJson))
 }
 
@@ -126,18 +127,20 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
     }
 
     return (
-        <form className={classes.form} onSubmit={handleSubmit} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit}>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={8}>
                     <Typography component="h1" variant="h5"> Dados do profissional </Typography>
                     <Paper className={clsx(classes.paper, classes.professional)}>
                         <Grid container spacing={1}>
                             <Grid item xs={2} style={{ marginTop: 15 }}>
-                                <TextField className={classes.field} name="name" id="professional.name" label="Nome" value={professional.name}
+                                <FieldValidated className={classes.field} name="name" id="professional.name" label="Nome" value={professional.name}
+                                    required invalidMessage={{ valueMissing: 'Valor não pode ser Vazio' }}
                                     onChange={handleInputChangeProfessional} autoFocus />
                             </Grid>
                             <Grid item xs={5} style={{ marginTop: 15 }}>
-                                <TextField className={classes.field} name="lastName" id="professional.lastName" label="Sobrenome" value={professional.lastName}
+                                <FieldValidated className={classes.field} name="lastName" id="professional.lastName" label="Sobrenome" value={professional.lastName}
+                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     onChange={handleInputChangeProfessional} />
                             </Grid>
                             <Grid item xs={5}>
@@ -150,7 +153,8 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                                         name="dateBirth"
                                         id="professional.dateBirth"
                                         label="Data de Nascimento"
-
+                                        required
+                                        invalidDateMessage="Data Invalida"
                                         value={professional.dateBirth}
                                         onChange={handleDateChange}
                                         KeyboardButtonProps={{
@@ -160,11 +164,17 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                                 </MuiPickersUtilsProvider>
                             </Grid>
                             <Grid item xs={4}>
-                                <TextField className={classes.field} name="eMail" id="contact.eMail" label="E-mail" value={contact.eMail}
+                                <FieldValidated className={classes.field} name="eMail" id="contact.eMail" label="E-mail" value={contact.eMail}
+                                    type="email" required 
+                                    invalidMessage={{ 
+                                        valueMissing: "Valor não pode ser Vazio", 
+                                        typeMismatch: "Ex.: contato@email.com" 
+                                    }} 
                                     onChange={handleInputChangeContact} />
                             </Grid>
                             <Grid item xs={8}>
-                                <TextField className={classes.field} name="phone" id="contact.phone" label="Telefone" value={contact.phone}
+                                <FieldValidated className={classes.field} name="phone" id="contact.phone" label="Telefone" value={contact.phone}
+                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     onChange={handleInputChangeContact} />
                             </Grid>
                         </Grid>
@@ -192,44 +202,51 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                         />
                         <Grid container spacing={1}>
                             <Grid item xs={4}>
-                                <TextField className={classes.field}
+                                <FieldValidated className={classes.field}
+                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     name="street" id="address.street"
                                     label="Rua" value={address.street}
                                     onChange={handleInputChangeAddress} />
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField className={classes.field}
+                                <FieldValidated className={classes.field}
+                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     name="num" id="address.num"
                                     label="Numero" value={address.num}
                                     onChange={handleInputChangeAddress} />
                             </Grid>
                             <Grid item xs={5}>
-                                <TextField className={classes.field}
+                                <FieldValidated className={classes.field}
+                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     name="complement" id="address.complement"
                                     label="Complemento" value={address.complement}
                                     onChange={handleInputChangeAddress} />
                             </Grid>
                             {/* ------------------------------------------ */}
                             <Grid item xs={1}>
-                                <TextField className={classes.field}
+                                <FieldValidated className={classes.field}
+                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     name="postalCode" id="address.postalCode"
                                     label="Cep" value={address.postalCode}
                                     onChange={handleInputChangeAddress} />
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField className={classes.field}
+                                <FieldValidated className={classes.field}
+                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     name="district" id="address.district"
                                     label="Bairro" value={address.district}
                                     onChange={handleInputChangeAddress} />
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField className={classes.field}
+                                <FieldValidated className={classes.field}
+                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     name="city" id="address.city"
                                     label="Cidade" value={address.city}
                                     onChange={handleInputChangeAddress} />
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField className={classes.field}
+                                <FieldValidated className={classes.field}
+                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     name="state" id="address.state"
                                     label="Estado" value={address.state}
                                     onChange={handleInputChangeAddress} />
@@ -238,7 +255,7 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                     </Paper>
                 </Grid>
                 <Grid container direction='row' alignItems="center" justify="flex-end">
-                    <Button type="submit" variant="contained" color="primary" style={{marginRight: 10}}>Atualizar</Button>
+                    <Button type="submit" variant="contained" color="primary" style={{ marginRight: 10 }}>Atualizar</Button>
                 </Grid>
             </Grid>
         </form>

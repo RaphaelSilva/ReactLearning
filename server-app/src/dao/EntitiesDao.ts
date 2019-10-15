@@ -82,7 +82,7 @@ export class ProductTypeDao extends ADao<ProductType> {
 
 export class ProductDao extends ADao<Product> {
   constructor () {
-    super('product', 'name,description,img,readMore,tagLink,registerDate,productTypeId,profileId')
+    super('product', 'code,name,description,img,readMore,tagLink,registerDate,productTypeId,profileId')
   }
 
   public fetchByTag (tagLink: string): Promise<Product> {

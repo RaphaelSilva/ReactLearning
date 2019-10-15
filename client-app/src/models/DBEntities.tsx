@@ -78,6 +78,7 @@ export interface ProductType extends EntitiId{
 }
 
 export interface Product extends EntitiId{
+    code: string;
     name: string;
     description: string;
     img: string;

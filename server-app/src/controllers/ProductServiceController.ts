@@ -57,7 +57,7 @@ export default class ProductServiceController extends AController {
 
     private addOne = (req: Request, res: Response): void => {
       console.log('aqui')
-      
+
       res.json({ msg: 'success' })
     }
 }

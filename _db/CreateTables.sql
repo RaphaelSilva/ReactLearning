@@ -113,7 +113,7 @@ DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE `product` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `codigo` VARCHAR(35) NULL,
+  `code` VARCHAR(35) NULL,
   `name` VARCHAR(50) NULL,
   `description` VARCHAR(120) NULL,
   `img` VARCHAR(100) NULL,

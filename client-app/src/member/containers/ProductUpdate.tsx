@@ -1,17 +1,17 @@
 import React, { ChangeEvent, useState, FormEvent } from 'react'
 import { Product } from '../../models/DBEntities'
-import { Paper, Grid, TextField, Avatar, IconButton, makeStyles, CssBaseline, AppBar, Toolbar, Fab } from '@material-ui/core'
+import { Paper, Grid, Avatar, IconButton, makeStyles, CssBaseline, AppBar, Toolbar, Typography } from '@material-ui/core'
 import { fetchPost } from '../../utils/FUtil'
 import UploadFileModal from '../../component/UploadFileModal'
 import Camera from '@material-ui/icons/Camera'
-import MenuIcon from '@material-ui/icons/Menu';
-import AddIcon from '@material-ui/icons/Add';
-import SearchIcon from '@material-ui/icons/Search';
-import MoreIcon from '@material-ui/icons/MoreVert';
+import SaveIcon from '@material-ui/icons/Save';
+import CancelIcon from '@material-ui/icons/Cancel';
+import FieldValidated from '../../component/FieldValidated'
 
 interface IProductUpdate {
     product: Product
     onUpdate: (product: Product) => void
+    onCancel: () => void
 }
 
 const useStyles = makeStyles(theme => ({
@@ -40,14 +40,6 @@ const useStyles = makeStyles(theme => ({
     grow: {
         flexGrow: 1,
     },
-    fabButton: {
-        position: 'absolute',
-        zIndex: 1,
-        top: -30,
-        left: 0,
-        right: 0,
-        margin: '0 auto',
-    },
 }))
 
 export default function ProductUpdate(props: Readonly<IProductUpdate>) {
@@ -66,47 +58,59 @@ export default function ProductUpdate(props: Readonly<IProductUpdate>) {
         setProduct({ ...product })
     }
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const result = await fetchPost<string>('/api/product/save', JSON.stringify(product))
-        console.log(result)
-
+        console.log(JSON.stringify(product))
+        fetchPost<string>('/api/product/save', JSON.stringify(product)).then((result) => {
+            console.log(result)
+        })
     }
-
 
     return (<>
         <CssBaseline />
-        <form className={classes.form} onSubmit={handleSubmit} noValidate>
-            <Paper style={{height: '80vh'}}>
+        <form className={classes.form} onSubmit={handleSubmit}>
+            <Paper style={{ height: '80vh' }} className={classes.paper}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TextField className={classes.field}
-                            name="name" id="product.name"
+                        <FieldValidated className={classes.field}
+                            name="code" id="product.code" required={true}
+                            label="Codigo" value={product.code}
+                            onChange={handleInputChange} autoFocus
+                            inputProps={{ maxLength: "35" }}
+                            title="Preencha o campo Codigo" />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FieldValidated className={classes.field}
+                            name="name" id="product.name" required={true}
                             label="Name" value={product.name}
-                            onChange={handleInputChange} />
+                            onChange={handleInputChange}
+                            inputProps={{ maxLength: "50" }}
+                            title="Preencha o campo Name" />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField className={classes.field}
-                            name="description" id="product.description"
+                        <FieldValidated className={classes.field}
+                            name="description" id="product.description" required={true}
                             label="Descrição" value={product.description}
+                            inputProps={{ maxLength: "120" }}
                             onChange={handleInputChange} />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField className={classes.field}
-                            name="readMore" id="product.readMore"
-                            multiline rowsMax="5"
+                        <FieldValidated className={classes.field}
+                            name="readMore" id="product.readMore" required={true}
                             label="Informação extra" value={product.readMore}
+                            multiline rowsMax="5"
                             onChange={handleInputChange} />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField className={classes.field}
-                            name="tagLink" id="product.tagLink"
+                        <FieldValidated className={classes.field}
+                            name="tagLink" id="product.tagLink" required={true}
                             label="Link" value={product.tagLink}
+                            inputProps={{ maxLength: "64" }}
                             onChange={handleInputChange} />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField className={classes.field}
-                            name="productTypeId" id="product.productTypeId"
+                        <FieldValidated className={classes.field}
+                            name="productTypeId" id="product.productTypeId" required={true}
                             label="Descrição" value={product.productTypeId}
                             onChange={handleInputChange} />
                     </Grid>
@@ -118,25 +122,22 @@ export default function ProductUpdate(props: Readonly<IProductUpdate>) {
                             </IconButton>
                         </UploadFileModal>
                     </Grid>
-                    <Grid item xs={12}>
-                        <h1>Salvar</h1>
-                    </Grid>
-                </Grid>            
+                </Grid>
             </Paper>
             <AppBar position="sticky" color="primary" className={classes.appBar}>
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="open drawer">
-                        <MenuIcon />
+                    <IconButton color="inherit" edge="start" type="submit">
+                        <Typography style={{ padding: 5 }}>
+                            Salvar
+                        </Typography>
+                        <SaveIcon />
                     </IconButton>
-                    <Fab color="secondary" aria-label="add" className={classes.fabButton}>
-                        <AddIcon />
-                    </Fab>
                     <div className={classes.grow} />
-                    <IconButton color="inherit">
-                        <SearchIcon />
-                    </IconButton>
-                    <IconButton edge="end" color="inherit">
-                        <MoreIcon />
+                    <IconButton color="inherit" edge="end" onClick={() => props.onCancel()}>
+                        <Typography style={{ padding: 5 }}>
+                            Cancelar
+                        </Typography>
+                        <CancelIcon />
                     </IconButton>
                 </Toolbar>
             </AppBar>

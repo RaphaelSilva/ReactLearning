@@ -76,6 +76,7 @@ export function ParseProfile(data?: any): Profile {
 
 export function ParseProduct(data?: any): Product {
     return {
+    code: data ? (data as Product).code || '' : '',
     name: data ? (data as Product).name || '' : '',
     description: data ? (data as Product).description || '' : '',
     img: data ? (data as Product).img || '' : '',

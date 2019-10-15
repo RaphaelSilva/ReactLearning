@@ -52,7 +52,12 @@ export default function BodyProductService(props: Readonly<ISecurityComponet>) {
 
     const [product, setProduct] = useState<Product>(ParseProduct())
     const onAddButtonClick = (event: MouseEvent<HTMLButtonElement>) => {
+        setProduct(ParseProduct())
         refMyModal.current.open()
+    }
+
+    const onProductCancel = () => {
+        refMyModal.current.close()
     }
 
     const onProductUpdate = (product: Product) => {
@@ -114,7 +119,7 @@ export default function BodyProductService(props: Readonly<ISecurityComponet>) {
             defaultTab={0}            
             labelTabs={[`${product ? "Cadastrar" : "Atualizar"} Produto`, "Plano de pagamento"]}
             renderItens={[
-                <ProductUpdate product={product} onUpdate={onProductUpdate} />,
+                <ProductUpdate product={product} onUpdate={onProductUpdate} onCancel={onProductCancel}/>,
                 <p style={{height: '80vh'}}>Todas as Imagens</p>
             ]} />
     </>
