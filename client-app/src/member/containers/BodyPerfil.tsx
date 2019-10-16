@@ -60,6 +60,7 @@ const fetchProfessional = async (setting: (prof: Professional) => void) => {
 export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
     const classes = useStyles()
 
+
     useEffect(() => {
         fetchProfessional((prof: Professional): void => {
             setProfessional(prof)
@@ -75,8 +76,7 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
     })
 
     const [contact, setContact] = useState<Contact>({
-        eMail: '',
-        phone: ''
+        eMail: '', phone: ''
     })
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -165,17 +165,29 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                             </Grid>
                             <Grid item xs={4}>
                                 <FieldValidated className={classes.field} name="eMail" id="contact.eMail" label="E-mail" value={contact.eMail}
-                                    type="email" required 
-                                    invalidMessage={{ 
-                                        valueMissing: "Valor não pode ser Vazio", 
-                                        typeMismatch: "Ex.: contato@email.com" 
-                                    }} 
+                                    type="email" required
+                                    invalidMessage={{
+                                        valueMissing: "Valor não pode ser Vazio",
+                                        typeMismatch: "Ex.: contato@email.com"
+                                    }}
                                     onChange={handleInputChangeContact} />
                             </Grid>
                             <Grid item xs={8}>
                                 <FieldValidated className={classes.field} name="phone" id="contact.phone" label="Telefone" value={contact.phone}
-                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
-                                    onChange={handleInputChangeContact} />
+                                    required type="tel" inputProps={{ maxLength: "16" }}
+                                    mask={["(99) 9 9999-9999", "(99) 9999-9999"]}
+                                    pickMask={(value, cMask, keyCode) => {
+                                        const isNumber = (keyCode >= 96 && keyCode <= 105) || (keyCode >= 48 && keyCode <= 57)
+                                        const isDel = keyCode === 8 || keyCode === 46
+                                        const i = value.replace(/\D/g, '')
+                                        const m = cMask.replace(/\D/g, '')
+                                        console.log(`i=[${i.length}]  t=[${m.length}] & isNumber=[${isNumber}] isDel=[${isDel}]`)
+                                        if (i.length >= m.length && isNumber) return 0 // 11
+                                        if (m.length >= 11 && isDel) return 1
+                                        return m.length === 11 ? 0 : 1
+                                    }}
+                                    onChange={handleInputChangeContact}
+                                    invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }} />
                             </Grid>
                         </Grid>
                     </Paper>
@@ -223,14 +235,16 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                                     onChange={handleInputChangeAddress} />
                             </Grid>
                             {/* ------------------------------------------ */}
-                            <Grid item xs={1}>
+                            <Grid item xs={2}>
                                 <FieldValidated className={classes.field}
                                     required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     name="postalCode" id="address.postalCode"
+                                    inputProps={{ maxLength: "9" }}
+                                    mask={["99999-999"]}
                                     label="Cep" value={address.postalCode}
                                     onChange={handleInputChangeAddress} />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <FieldValidated className={classes.field}
                                     required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
                                     name="district" id="address.district"

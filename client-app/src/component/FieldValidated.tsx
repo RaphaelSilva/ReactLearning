@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useState, FormEvent, FocusEvent } from 'react'
-
-import { FormControl, InputLabel, FormHelperText, Input } from '@material-ui/core'
+import { FormControl, InputLabel, FormHelperText } from '@material-ui/core'
 import { InputBaseComponentProps } from '@material-ui/core/InputBase'
+import Input, { InputProps } from '@material-ui/core/Input'
+import InputMask from 'react-input-mask'
 
 type ValidityMensagens = {
     badInput?: string
@@ -30,21 +31,17 @@ type FieldValidatedProps = {
     required?: boolean
     multiline?: boolean
     inputProps?: InputBaseComponentProps
+    mask?: Array<string>
+    pickMask?: (value: string, currentMask: string, keyCode: number) => number
     onChange: (e: ChangeEvent<HTMLInputElement>) => void
     assert?: (el: HTMLInputElement | HTMLTextAreaElement) => boolean
 }
 
 export default function FieldValidated(props: Readonly<FieldValidatedProps>) {
     const describedby = props.name + props.id
-
     const [fcError, setFcError] = useState(false)
     const [invalidMessage, setInvalidMessage] = useState(props.invalidMessage ? props.invalidMessage.valueMissing : '')
 
-    // const [, setValidityState] = useState<ValidityState>({
-    //     badInput: false, customError: false, patternMismatch: false,
-    //     rangeOverflow: false, rangeUnderflow: false, stepMismatch: false, tooLong: false,
-    //     tooShort: false, typeMismatch: false, valid: false, valueMissing: false,
-    // })
 
     const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (props.assert) setFcError(!props.assert(e.target))
@@ -58,10 +55,6 @@ export default function FieldValidated(props: Readonly<FieldValidatedProps>) {
         else {
             doValidation(e.target as HTMLInputElement | HTMLTextAreaElement)
         }
-    }
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        props.onChange(e)
     }
 
     const doValidation = (el: HTMLInputElement | HTMLTextAreaElement) => {
@@ -95,24 +88,51 @@ export default function FieldValidated(props: Readonly<FieldValidatedProps>) {
         if (el.validity.valueMissing && props.invalidMessage) {
             setInvalidMessage(props.invalidMessage.valueMissing ? props.invalidMessage.valueMissing : 'valueMissing')
         }
-
         setFcError(!el.validity.valid)
+    }
+
+    const [numMask, setNumMask] = useState(0)
+    const changeMask = (i: number): void => {
+        if (props.pickMask && props.mask && props.value.length > 0) {
+            setNumMask(props.pickMask(props.value, props.mask[numMask],  i))            
+        }
     }
 
     return (
         <FormControl className={props.className} error={fcError} >
             <InputLabel htmlFor={props.id}>{props.label}</InputLabel>
-            <Input id={props.id} name={props.name} value={props.value}
-                inputProps={props.inputProps}
-                aria-describedby={describedby}
-                onChange={handleChange}
-                autoFocus={props.autoFocus}
-                required={props.required}
-                onInvalid={handleInvalid}
-                multiline={props.multiline}
-                rowsMax={props.rowsMax}
-                type={props.type}
-                onBlur={handleBlur} />
+            {props.mask ? (
+                <InputMask mask={props.mask[numMask]}
+                    id={props.id} name={props.name} value={props.value}
+                    autoFocus={props.autoFocus}
+                    onChange={props.onChange}
+                    onKeyDown={e => {
+                        changeMask(e.keyCode)
+                    }}
+                    required={props.required}
+                    onInvalid={handleInvalid}
+                    onBlur={handleBlur}
+                >
+                    {(inputProps: InputProps) => <Input
+                        {...inputProps}
+                        type={props.type}
+                    />}
+                </InputMask>
+            ) : (
+                    <Input
+                        id={props.id} name={props.name} value={props.value}
+                        inputProps={props.inputProps}
+                        aria-describedby={describedby}
+                        type={props.type}
+                        rowsMax={props.rowsMax}
+                        multiline={props.multiline}
+                        autoFocus={props.autoFocus}
+                        required={props.required}
+                        onChange={props.onChange}
+                        onInvalid={handleInvalid}
+                        onBlur={handleBlur}
+                    />
+                )}
             {fcError ? (<FormHelperText id={describedby}>{invalidMessage}</FormHelperText>) : ''}
         </FormControl>
     )
