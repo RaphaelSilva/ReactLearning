@@ -7,10 +7,11 @@ import Camera from '@material-ui/icons/Camera'
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import FieldValidated from '../../component/FieldValidated'
+import { ResponseView } from '../../models/ViewModels'
 
 interface IProductUpdate {
     product: Product
-    onUpdate: (product: Product) => void
+    onUpdate: (result: ResponseView & { product?: Product } | null) => void
     onCancel: () => void
 }
 
@@ -61,9 +62,11 @@ export default function ProductUpdate(props: Readonly<IProductUpdate>) {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         console.log(JSON.stringify(product))
-        fetchPost<string>('/api/product/save', JSON.stringify(product)).then((result) => {
-            console.log(result)
-        })
+        fetchPost<ResponseView & { product?: Product }>('/api/product/save',
+            JSON.stringify(product)).then((result) => {
+                console.log(result)
+                props.onUpdate(result)
+            }).catch(() => props.onUpdate(null))
     }
 
     return (<>

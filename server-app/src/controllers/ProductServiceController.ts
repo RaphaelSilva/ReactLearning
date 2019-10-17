@@ -2,6 +2,7 @@ import { Request, Response, Application } from 'express'
 import { AController } from './AController'
 import ProductServiceRepository from './repository/ProductServiceRepository'
 import MemberLoginController from './LoginController'
+import { Product } from '../models/Entities'
 
 export default class ProductServiceController extends AController {
     static instance: ProductServiceController
@@ -19,8 +20,9 @@ export default class ProductServiceController extends AController {
         this.instance.findProducts
       ])
 
-      app.post('/api/product/save/:productTag', [
-        this.instance.addOne
+      app.post('/api/product/save', [
+        MemberLoginController.instance.isUserAuth,
+        this.instance.saveProduct
       ])
 
       return this.instance
@@ -55,9 +57,12 @@ export default class ProductServiceController extends AController {
       }
     }
 
-    private addOne = (req: Request, res: Response): void => {
-      console.log('aqui')
-
-      res.json({ msg: 'success' })
+    private saveProduct = (req: Request, res: Response): void => {
+      const product = req.body as Product
+      product.profileId = req.userAuth.profileId
+      this.productServiceRepository.update(product).then((result) => {
+        this.setResponseView(res, result)
+      }).catch(error => this.sendError(res, error,
+        'Problemas no servidor para atualizar professional [PSCSP]'))
     }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, MouseEvent, useRef } from 'react'
 import { Paper, TableCell, TableHead, TableRow, Table, TableBody, Grid, makeStyles, createStyles, Theme, Divider, IconButton } from '@material-ui/core'
 import { fetchGet } from '../../utils/FUtil'
-import { ProductAndType } from '../../models/ViewModels'
+import { ProductAndType, ResponseView } from '../../models/ViewModels'
 import { ISecurityComponet } from '../../component/SecurityComponet'
 import Search from '../../component/Search';
 import MyModal, { RefMyModal } from '../../component/MyModal'
@@ -9,6 +9,7 @@ import { Product } from '../../models/DBEntities'
 import ProductUpdate from './ProductUpdate'
 import { ParseProduct } from '../../models/ParserJson'
 import Update from '@material-ui/icons/Update';
+import CustomizedSnackbars, { RefCustomizedSnackbars } from '../../component/CustomizedSnackbars'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,6 +31,7 @@ const urlList = '/api/product/list'
 export default function BodyProductService(props: Readonly<ISecurityComponet>) {
     const classes = useStyles()
     const refMyModal = useRef(RefMyModal)
+    const refCustomizedSnackbars = useRef(RefCustomizedSnackbars)
 
     const [productsTyped, setProductsTyped] = useState<Array<ProductAndType>>([])
     useEffect(() => {
@@ -60,12 +62,26 @@ export default function BodyProductService(props: Readonly<ISecurityComponet>) {
         refMyModal.current.close()
     }
 
-    const onProductUpdate = (product: Product) => {
-        setProduct(product)
+    const onProductUpdate = (result: ResponseView & { product?: Product } | null) => {
+        if (result) {
+            if (result.product) setProduct(result.product)
+            if (result.variant === 'success') {
+                fetchGet<Array<ProductAndType>>(urlList)
+                .then((productsAndTyped) => {
+                    setProductsTyped(productsAndTyped)
+                    refMyModal.current.close()
+                })
+            }
+            refCustomizedSnackbars.current.show(result)
+        } else {
+            refCustomizedSnackbars.current.show500()
+        }
     }
 
     const updateProductTyped = (productAndTyped: ProductAndType) => {
-        setProduct(ParseProduct(productAndTyped))
+        const p = ParseProduct(productAndTyped)
+        p.id = productAndTyped.id
+        setProduct(p)
         refMyModal.current.open()
     }
 
@@ -115,12 +131,13 @@ export default function BodyProductService(props: Readonly<ISecurityComponet>) {
                 </Grid>
             </Grid>
         </Paper>
+        <CustomizedSnackbars ref={refCustomizedSnackbars} />
         <MyModal ref={refMyModal}
-            defaultTab={0}            
+            defaultTab={0}
             labelTabs={[`${product ? "Cadastrar" : "Atualizar"} Produto`, "Plano de pagamento"]}
             renderItens={[
-                <ProductUpdate product={product} onUpdate={onProductUpdate} onCancel={onProductCancel}/>,
-                <p style={{height: '80vh'}}>Todas as Imagens</p>
+                <ProductUpdate product={product} onUpdate={onProductUpdate} onCancel={onProductCancel} />,
+                <p style={{ height: '80vh' }}>Todas as Imagens</p>
             ]} />
     </>
     )

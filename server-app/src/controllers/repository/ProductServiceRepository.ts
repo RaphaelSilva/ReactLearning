@@ -1,5 +1,6 @@
 import { ProductDao, ProductTypeDao } from '../../dao/EntitiesDao'
-import { ProductAndType } from '../../models/ViewModels'
+import { ProductAndType, ResponseView } from '../../models/ViewModels'
+import { Product } from '../../models/Entities'
 
 export default class ProductServiceRepository {
   public productDao: ProductDao
@@ -31,5 +32,38 @@ export default class ProductServiceRepository {
     const dbReturn = await this.productDao.getComplexlist<ProductAndType>('product.profileId = ? AND LOWER(product.name) like LOWER(?)',
       [profileId, `%${text}%`], this.otherFields, this.relation)
     return dbReturn
+  }
+
+  private valideting = (product: Product): void => {
+    const pValide = this.productDao.valideField(product)
+    if (pValide.length > 0) {
+      let msgErro
+      pValide.forEach(node => { msgErro += node.msg + '\n' })
+      throw new Error(msgErro)
+    }
+    product.registerDate = new Date(product.registerDate)
+  }
+
+  public update = async (product: Product): Promise<ResponseView & { product?: Product }> => {
+    try {
+      console.log(product.id)
+      // validate all fields of product importante to save
+      this.valideting(product)
+      // true: update product to DB if id is null
+      console.log(product.id)
+      
+      if (product.id) {
+        await this.productDao.update(product)
+        return { message: `Produto ${product.name} atualizado com sucesso!`, variant: 'success' }
+      } else {
+        const nProduct = await this.productDao.add(product)
+        return { message: `Produto ${product.name} inserido com sucesso!`, variant: 'success', product: nProduct }
+      }
+    } catch (error) {
+      // false: launch a mensage of Error as a Exception
+      console.log('updateUpdate')
+      console.log(error)
+      return { message: `Ops! não podemos atualizar seu produto ${product.name}`, variant: 'warning' }
+    }
   }
 }
