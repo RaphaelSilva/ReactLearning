@@ -55,7 +55,7 @@ export default class ADao<K extends EntitiId> {
       })
   }
 
-  protected getResult<T> (query: QueryOptions,
+  public getResult<T> (query: QueryOptions,
     /* parser function for specialization */ parser?: (data: any) => T): Promise<T> {
     if (ADao.debug) console.log(query)
     return this.executeQuery<T>(query, (err, rows: queryCallback, resolve: (value?: T) => void, reject: any) => {
@@ -70,7 +70,7 @@ export default class ADao<K extends EntitiId> {
     })
   }
 
-  protected getResults<T> (query: QueryOptions,
+  public getResults<T> (query: QueryOptions,
     /* parser function for specialization */ parser?: Function): Promise<Array<T>> {
     if (ADao.debug) console.log(query)
     return this.executeQuery<Array<T>>(query, (err, rows: queryCallback, resolve: (value?: Array<T>) => void, reject: any) => {
@@ -89,6 +89,17 @@ export default class ADao<K extends EntitiId> {
       } else {
         obj.id = result.insertId
         resolve(obj)
+      }
+    })
+  }
+
+  protected updateData (obj: K, query: QueryOptions): Promise<ResultQuery> {
+    if (ADao.debug) console.log(query)
+    return this.executeQuery<ResultQuery>(query, (err, result: ResultQuery, resolve: (value?: ResultQuery) => void, reject: any) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
       }
     })
   }
@@ -123,9 +134,8 @@ export default class ADao<K extends EntitiId> {
   }
 
   protected getObjSqlFields (obj: K, fields: string): K {
-    const aFields = fields.split(',')
     const cObj = {}
-    aFields.forEach(field => {
+    fields.split(',').forEach(field => {
       cObj[field] = Reflect.get(obj, field)
     })
     return cObj as K
@@ -184,6 +194,13 @@ export default class ADao<K extends EntitiId> {
     })
   }
 
+  public update (obj: K): Promise<ResultQuery> {
+    return this.updateData(obj, {
+      sql: 'update ' + this.table + ' set ? where id = ?',
+      values: [this.getObjSqlFields(obj, this.fields), obj.id]
+    })
+  }
+
   public deleteData (obj: K): Promise<K> {
     return this.removeData(obj, {
       sql: this.buildDelete(),
@@ -203,5 +220,24 @@ export default class ADao<K extends EntitiId> {
       sql: select,
       values: parans
     })
+  }
+
+  public valideField (obj: K): Array<{
+    msg: string;
+    data: any;
+    status: string;
+  }> {
+    const ret = []
+    this.fields.split(',').forEach(field => {
+      const value = Reflect.get(obj, field)
+      if (typeof value === 'undefined') {
+        ret.push({
+          msg: `${this.table}.${field} => ${value}`,
+          data: value,
+          status: 'undefined'
+        })
+      }
+    })
+    return ret
   }
 }

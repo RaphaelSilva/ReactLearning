@@ -20,3 +20,8 @@ export interface ProductToSale {
     profile: Profile;
     professional: Professional;
 }
+
+export interface ResponseView {
+    message: string;
+    variant: 'success'|'warning'|'error'|'info';
+}

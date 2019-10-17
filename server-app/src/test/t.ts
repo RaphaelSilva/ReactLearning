@@ -1,45 +1,55 @@
-import { getRndInteger as gRI, getRandomString as gRS } from '../utils/Random'
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { CustomerDao } from '../dao/EntitiesDao'
+import { Professional, Customer, Contact, Address } from '../models/Entities'
+import ADao from '../dao/ADao'
+import OpenFile from '../utils/OpenFile'
 
-import TestRepository from './TestRepository'
-import { ProductType, Product } from '../models/Entities'
-console.clear()
-console.log('.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.')
-
-const testRepository = new TestRepository()
-
-const exec = async (): Promise<void> => {
-  // --------------------------------------------- Preencher aqui antes
-  testRepository.ofPerfilId = 1
-  // ---------------------------------------------
-
-  const productTypes: Array<ProductType> = []
-  for (let i = 0; i < 15; i++) {
-    const mField = 50
-    const nWords = gRI(3, 4)
-    const nLetter = mField / nWords
-    productTypes.push({ name: gRS(nWords, nLetter).substring(0, mField), description: gRS(gRI(1, 3), gRI(5, 15)).substring(0, 79) })
-  }
-
-  const products: Array<Product> = []
-  for (let i = 0; i < 15; i++) {
-    const pType = productTypes[gRI(1, productTypes.length - 1)]
-    products.push({
-      name: gRS(gRI(3, 8), gRI(5, 15)).substring(0, 49),
-      description: gRS(gRI(1, 3), gRI(5, 15)).substring(0, 119),
-      img: '/imgs/profile/templ/profile-m.jpg',
-      readMore: gRS(gRI(10, 50), gRI(5, 15)),
-      registerDate: new Date(),
-      tagLink: gRS(1, gRI(5, 30)),
-      productType: pType,
-      productTypeId: pType.id,
-      profileId: testRepository.ofPerfilId
-    })
-  }
-  testRepository.productTypes = productTypes
-  testRepository.products = products
-  await testRepository.InitTest()
+const address: Address = {
+  postalCode: '13088340',
+  street: 'Av. Herminia de Andrade Couto e Silva',
+  num: '188',
+  complement: 'SpazioRD',
+  district: 'Pq. São Quirino',
+  city: 'Campinas',
+  state: 'São Paulo'
 }
 
-exec().then(() => {
-  console.log('done')
-})
+const contact: Contact = {
+  eMail: 'eng.raphaelsn@gmail.com',
+  phone: '19999991155'
+}
+
+const customer: Customer = {
+  name: 'Raphael',
+  lastName: 'Silva do Nascimneto',
+  dateBirth: new Date('1988-10-01'),
+  img: '/imgs/profile/templ/profile-m.jpg',
+  cpf: '05214693218',
+  address: address,
+  contact: contact,
+  addressId: address.id,
+  contactId: contact.id
+}
+
+const professional: Professional = {
+  name: customer.name,
+  lastName: customer.lastName,
+  dateBirth: customer.dateBirth,
+  img: customer.img,
+  cpf: customer.cpf,
+  cnpj: '10623708000152',
+  isAddressShowed: true,
+  address: address,
+  contact: contact,
+  customerId: customer.id,
+  addressId: address.id,
+  contactId: contact.id
+}
+console.clear()
+OpenFile.rootPublic = 'D:\\workspace_docker\\SpazioRD\\server-app\\src\\public'
+console.log(OpenFile.listAllFiles('\\imgs\\profile\\1\\'))
+const t = 'D:\\workspace_docker\\SpazioRD\\server-app\\src\\public\\imgs\\profile\\1\\Logos-01.png'
+const tspl = t.split('\\')
+
+console.log(tspl[tspl.length - 1])

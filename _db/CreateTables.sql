@@ -186,3 +186,13 @@ CREATE TABLE `sOrderItem` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+INSERT INTO productType (id, name, description) VALUES (  1, 'Aulas em Grupo', 'Aulas em um grupo determinado presencial');
+INSERT INTO productType (id, name, description) VALUES (  2, 'Aulas Personalizadas', 'Aulas individuais presencial');
+INSERT INTO productType (id, name, description) VALUES (  3, 'Retirada', 'O produto tem que ser retirado em um local');
+INSERT INTO productType (id, name, description) VALUES (  4, 'Entregavel', 'O produto será entregue');
+INSERT INTO productType (id, name, description) VALUES (  5, 'Curso Online', 'Curso estruturado em Modulos na plataforma');
+INSERT INTO productType (id, name, description) VALUES (  6, 'Video Aula', 'Video gravado sobre um unico tema');
+INSERT INTO productType (id, name, description) VALUES (  7, 'Aula Online', 'Aulas ao vivo na plataforma');
+INSERT INTO productType (id, name, description) VALUES (  8, 'Atendimento', 'Consulta presencial');
+INSERT INTO productType (id, name, description) VALUES (  9, 'Atendimento Online', 'Consulta online');
+INSERT INTO productType (id, name, description) VALUES ( 10, 'Espaço fisico', 'Espaço fisico para atividades');

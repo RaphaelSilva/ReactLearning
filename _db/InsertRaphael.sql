@@ -1,14 +1,14 @@
 -- FORM
+set @img = '/imgs/profile/templ/profile-m.jpg';
+
 set @userName = 'raphael';
 set @userPassword = '123';
 set @customerName = 'Raphael';
 set @customerLastName = 'Silva do Nascimneto';
 set @customerDate = '1988-10-05';
-set @customerImg = '/imgs/profile/templ/profile-m.jpg';
 set @customerCpf = '25614557119';
 set @professionalCnpj = '10623708000152';
 set @commerceName = 'SpazioRD';
-set @commerceImg = '/imgs/profile/templ/profile-m.jpg';
 set @addressStreet = 'Av. Herminia de Andrade Coulto e Silva';
 set @addressNum = '123';
 set @addressComplement = 'SpazioRD';
@@ -32,20 +32,20 @@ SELECT LAST_INSERT_ID() INTO @contactId;
 -- Customer Register -------------------------------------------------------
 INSERT INTO customer (name, lastName, dateBirth, img, cpf,
                       addressId, contactId)
-VALUES ( @customerName, @customerLastName, @customerDate, @customerImg,
+VALUES ( @customerName, @customerLastName, @customerDate, @img,
          @customerCpf, @addressId, @contactId);
 SELECT LAST_INSERT_ID() INTO @customerId;
 
 -- Professional Register -------------------------------------------------------
 INSERT INTO professional (customerId, img, cnpj, isAddressShowed,
                           addressId, contactId)
-VALUES ( @customerId, @customerImg, @professionalCnpj, 1,
+VALUES ( @customerId, @img, @professionalCnpj, 1,
          @addressId, @contactId);
 SELECT LAST_INSERT_ID() INTO @professionalId;
 
 -- Commerce Register -----------------------------------------------------------
 INSERT INTO commerce (name, img, addressId, contactId)
-VALUES ( @commerceName, @commerceImg, @addressId, @contactId);
+VALUES ( @commerceName, @img, @addressId, @contactId);
 SELECT LAST_INSERT_ID() INTO @commerceId;
 
 -- Perfil Register -------------------------------------------------------------
@@ -57,3 +57,9 @@ SELECT LAST_INSERT_ID() INTO @profileId;
 INSERT INTO sysUser (userName, password, profileId)
 VALUES ( @userName, @userPassword, @profileId);
 SELECT LAST_INSERT_ID() INTO @userId;
+
+
+INSERT INTO product ( code, name, description, img, readMore, tagLink, registerDate, productTypeId, profileId )
+VALUES ('XPTO', 'Coaching', 'bla Coaching bla Coaching bla', @img,
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
+  'coaching', UTC_DATE(),  1, @profileId );

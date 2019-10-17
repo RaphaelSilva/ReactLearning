@@ -15,6 +15,11 @@ export default class UploadSystem {
         this.instance.upload
       ])
 
+      app.get('/api/server/upload', [
+        MemberLoginController.instance.isUserAuth,
+        this.instance.getAll
+      ])
+
       return this.instance
     }
 
@@ -22,16 +27,28 @@ export default class UploadSystem {
       console.log('UploadWasCreated on -> ' + root)
     }
 
+    private defPath = '\\imgs\\profile\\'
+
     private upload = (req: Request, res: Response): void => {
       const form = new formidable.IncomingForm()
       let newPath = ''
       form.on('file', (_field, file: formidable.File) => {
-        newPath = '\\imgs\\profile\\' + req.userAuth.profileId + '\\' + file.name
+        newPath = `${this.defPath}${req.userAuth.profileId}\\${file.name}`
         OpenFile.moveFileFrom(file.path, newPath)
       })
       form.on('end', () => {
-        res.json(newPath.replace(/\\/g, '/'))
+        res.json(newPath)
       })
       form.parse(req)
+    }
+
+    private getAll = (req: Request, res: Response): void => {
+      const findOn = `${this.defPath}${req.userAuth.profileId}`
+      const allPath = []
+      OpenFile.listAllFiles(findOn).forEach(path => {
+        allPath.push(findOn + '\\' + path)
+      })
+
+      res.json(allPath)
     }
 }

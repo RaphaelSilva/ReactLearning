@@ -1,13 +1,13 @@
-import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react'
+import React, { useState, useEffect, FormEvent, ChangeEvent, useRef } from 'react'
 import { ISecurityComponet } from '../../component/SecurityComponet'
 import {
     Grid, Paper, makeStyles, Avatar, Button,
-    FormControlLabel, Switch, Typography
+    FormControlLabel, Switch, Typography, IconButton
 } from '@material-ui/core'
 import clsx from 'clsx';
 import { fetchPost, fetchGet } from '../../utils/FUtil';
 import { Professional, Contact, Address } from '../../models/DBEntities';
-import { ParseProfessional } from '../../models/ParserJson';
+import { ParseProfessional, ParseAddress, ParseContact } from '../../models/ParserJson';
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
@@ -16,6 +16,9 @@ import {
 import ptBR from "date-fns/locale/pt-BR";
 import UploadFileModal from '../../component/UploadFileModal';
 import FieldValidated from '../../component/FieldValidated';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import CustomizedSnackbars, { RefCustomizedSnackbars } from '../../component/CustomizedSnackbars';
+import { ResponseView } from '../../models/ViewModels';
 
 interface IBodyPerfil extends ISecurityComponet {
     match: {
@@ -31,9 +34,6 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         overflow: 'auto',
         flexDirection: 'column',
-    },
-    professional: {
-        height: 250,
     },
     address: {
         height: 200,
@@ -60,7 +60,6 @@ const fetchProfessional = async (setting: (prof: Professional) => void) => {
 export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
     const classes = useStyles()
 
-
     useEffect(() => {
         fetchProfessional((prof: Professional): void => {
             setProfessional(prof)
@@ -69,23 +68,33 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
         })
     }, [])
 
+    const mRef = useRef(RefCustomizedSnackbars)
+
     const [professional, setProfessional] = useState<Professional>(ParseProfessional())
-    const [address, setAddress] = useState<Address>({
-        city: '', complement: '', district: '', num: '',
-        state: '', street: '', postalCode: ''
-    })
+    const [address, setAddress] = useState<Address>(ParseAddress())
+    const [contact, setContact] = useState<Contact>(ParseContact())
 
-    const [contact, setContact] = useState<Contact>({
-        eMail: '', phone: ''
-    })
-
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         professional.address = address
         professional.contact = contact
-        console.log(professional)
-        const result = await fetchPost<string>('/api/member/updateProfessional', JSON.stringify(professional))
-        console.log(result)
+
+        professional.address.postalCode = address.postalCode.replace(/\D/g, '')
+        professional.contact.phone = contact.phone.replace(/\D/g, '')
+
+        fetchPost<ResponseView>('/api/member/updateProfessional', JSON.stringify(professional))
+        .then(result => {
+            mRef.current.show(result)
+            if(result.variant === 'success'){
+                fetchProfessional((prof: Professional): void => {
+                    setProfessional(prof)
+                    setAddress(prof.address)
+                    setContact(prof.contact)
+                })
+            }
+        }).catch(() => {
+            mRef.current.show500()
+        })
     }
 
     const handleInputChangeProfessional = (e: ChangeEvent<HTMLInputElement>) => {
@@ -126,82 +135,85 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
         setProfessional({ ...professional })
     }
 
-    return (
+    return (<>
         <form className={classes.form} onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-                <Grid item xs={12} md={6} lg={8}>
-                    <Typography component="h1" variant="h5"> Dados do profissional </Typography>
-                    <Paper className={clsx(classes.paper, classes.professional)}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={2} style={{ marginTop: 15 }}>
-                                <FieldValidated className={classes.field} name="name" id="professional.name" label="Nome" value={professional.name}
-                                    required invalidMessage={{ valueMissing: 'Valor não pode ser Vazio' }}
-                                    onChange={handleInputChangeProfessional} autoFocus />
+                <Grid item xs={12}>
+                    <Typography component="h1" variant="h5"> Dados Pessoais </Typography>
+                    <Paper className={classes.paper}>
+                        <Grid container >
+                            <Grid item xs={10}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={2} style={{ marginTop: 16 }}>
+                                        <FieldValidated className={classes.field} name="name" id="professional.name" label="Nome" value={professional.name}
+                                            required invalidMessage={{ valueMissing: 'Valor não pode ser Vazio' }}
+                                            onChange={handleInputChangeProfessional} autoFocus />
+                                    </Grid>
+                                    <Grid item xs={6} style={{ marginTop: 16 }}>
+                                        <FieldValidated className={classes.field} name="lastName" id="professional.lastName" label="Sobrenome" value={professional.lastName}
+                                            required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
+                                            onChange={handleInputChangeProfessional} />
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <MuiPickersUtilsProvider locale={ptBR} utils={DateFnsUtils}>
+                                            <KeyboardDatePicker
+                                                disableToolbar
+                                                variant="inline"
+                                                format="dd/MM/yyyy"
+                                                margin="normal"
+                                                name="dateBirth"
+                                                id="professional.dateBirth"
+                                                label="Data de Nascimento"
+                                                required
+                                                invalidDateMessage="Data Invalida"
+                                                value={professional.dateBirth}
+                                                onChange={handleDateChange}
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change date',
+                                                }}
+                                            />
+                                        </MuiPickersUtilsProvider>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FieldValidated className={classes.field} name="eMail" id="contact.eMail" label="E-mail" value={contact.eMail}
+                                            type="email" required
+                                            invalidMessage={{
+                                                valueMissing: "Valor não pode ser Vazio",
+                                                typeMismatch: "Ex.: contato@email.com"
+                                            }}
+                                            onChange={handleInputChangeContact} />
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <FieldValidated className={classes.field} name="phone" id="contact.phone" label="Telefone" value={contact.phone}
+                                            required type="tel" inputProps={{ maxLength: "16" }}
+                                            mask={["(99) 9 9999-9999", "(99) 9999-9999"]}
+                                            pickMask={(value, cMask, keyCode) => {
+                                                const isNumber = (keyCode >= 96 && keyCode <= 105) || (keyCode >= 48 && keyCode <= 57)
+                                                const isDel = keyCode === 8 || keyCode === 46
+                                                const i = value.replace(/\D/g, '')
+                                                const m = cMask.replace(/\D/g, '')
+                                                console.log(`i=[${i.length}]  t=[${m.length}] & isNumber=[${isNumber}] isDel=[${isDel}]`)
+                                                if (i.length >= m.length && isNumber) return 0 // 11
+                                                if (m.length >= 11 && isDel) return 1
+                                                return m.length === 11 ? 0 : 1
+                                            }}
+                                            onChange={handleInputChangeContact}
+                                            invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }} />
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={5} style={{ marginTop: 15 }}>
-                                <FieldValidated className={classes.field} name="lastName" id="professional.lastName" label="Sobrenome" value={professional.lastName}
-                                    required invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }}
-                                    onChange={handleInputChangeProfessional} />
-                            </Grid>
-                            <Grid item xs={5}>
-                                <MuiPickersUtilsProvider locale={ptBR} utils={DateFnsUtils}>
-                                    <KeyboardDatePicker
-                                        disableToolbar
-                                        variant="inline"
-                                        format="dd/MM/yyyy"
-                                        margin="normal"
-                                        name="dateBirth"
-                                        id="professional.dateBirth"
-                                        label="Data de Nascimento"
-                                        required
-                                        invalidDateMessage="Data Invalida"
-                                        value={professional.dateBirth}
-                                        onChange={handleDateChange}
-                                        KeyboardButtonProps={{
-                                            'aria-label': 'change date',
-                                        }}
-                                    />
-                                </MuiPickersUtilsProvider>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <FieldValidated className={classes.field} name="eMail" id="contact.eMail" label="E-mail" value={contact.eMail}
-                                    type="email" required
-                                    invalidMessage={{
-                                        valueMissing: "Valor não pode ser Vazio",
-                                        typeMismatch: "Ex.: contato@email.com"
-                                    }}
-                                    onChange={handleInputChangeContact} />
-                            </Grid>
-                            <Grid item xs={8}>
-                                <FieldValidated className={classes.field} name="phone" id="contact.phone" label="Telefone" value={contact.phone}
-                                    required type="tel" inputProps={{ maxLength: "16" }}
-                                    mask={["(99) 9 9999-9999", "(99) 9999-9999"]}
-                                    pickMask={(value, cMask, keyCode) => {
-                                        const isNumber = (keyCode >= 96 && keyCode <= 105) || (keyCode >= 48 && keyCode <= 57)
-                                        const isDel = keyCode === 8 || keyCode === 46
-                                        const i = value.replace(/\D/g, '')
-                                        const m = cMask.replace(/\D/g, '')
-                                        console.log(`i=[${i.length}]  t=[${m.length}] & isNumber=[${isNumber}] isDel=[${isDel}]`)
-                                        if (i.length >= m.length && isNumber) return 0 // 11
-                                        if (m.length >= 11 && isDel) return 1
-                                        return m.length === 11 ? 0 : 1
-                                    }}
-                                    onChange={handleInputChangeContact}
-                                    invalidMessage={{ valueMissing: "Valor não pode ser Vazio" }} />
+                            <Grid item xs={2}>
+                                <Avatar alt="Remy Sharp" src={professional.img} className={classes.bigAvatar} />
+                                <UploadFileModal onPick={handlePickImage} >
+                                    <span>alterar imagem</span>
+                                    <IconButton><PhotoCameraIcon /></IconButton>
+                                </UploadFileModal>
+
                             </Grid>
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                    <Typography component="h1" variant="h5"> Imagem </Typography>
-                    <Paper className={clsx(classes.paper, classes.professional)} >
-                        <UploadFileModal onPick={handlePickImage} >
-                            <p>Click para alterar a imagem</p>
-                            <Avatar alt="Remy Sharp" src={professional.img} className={classes.bigAvatar} />
-                        </UploadFileModal>
-                    </Paper>
-                </Grid>
-                <Grid item xs={12} md={12} lg={12}>
+                <Grid item xs={12} >
                     <Typography component="h1" variant="h5"> Endereço </Typography>
                     <Paper className={clsx(classes.paper, classes.address)}>
                         <FormControlLabel
@@ -273,6 +285,8 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                 </Grid>
             </Grid>
         </form>
+        <CustomizedSnackbars ref={mRef}/>
+    </>
     )
 }
 

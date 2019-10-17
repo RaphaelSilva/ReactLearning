@@ -1,6 +1,7 @@
-import React, { ReactNode, useState } from 'react'
-import { makeStyles, createStyles, Theme, Grid, Button, CircularProgress } from '@material-ui/core'
+import React, { useState } from 'react'
+import { makeStyles, createStyles, Theme, Grid, Button, CircularProgress, GridList, ListSubheader, GridListTile } from '@material-ui/core'
 import DropZone from './DropZone'
+import { OnChange } from './UploadFileModal'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,40 +28,36 @@ const useStyles = makeStyles((theme: Theme) =>
             margin: theme.spacing(2),
         },
     }),
-);
-
-interface OnChange {
-    onPick: (img: string) => void;
-    children?: ReactNode;
-}
+)
 
 export default function UploadFile(props: Readonly<OnChange>) {
-    const classes = useStyles();
+    const classes = useStyles()
 
     const [uploadProgress, setUploadProgress] = useState({} as unknown as any)
-    const [uploading, setUploading] = useState(false);
-    const [successfullUploaded, setSuccessfullUploaded] = useState(false);
+    const [uploading, setUploading] = useState(false)
+    const [successfullUploaded, setSuccessfullUploaded] = useState(false)
+    const [response, setResponse] = useState([] as Array<string>)
 
     // props.onChange('test')    
-    const [files, setFiles] = useState([] as Array<File>);
+    const [files, setFiles] = useState([] as Array<File>)
     const onFilesAdded = (files: Array<File>) => {
         setFiles(files)
     }
 
     const renderProgress = (file: File) => {
-        const uploadProgressItem = uploadProgress[file.name];
+        const uploadProgressItem = uploadProgress[file.name]
         if (uploading || successfullUploaded) {
             return (
                 <div className={classes.progressWrapper}>
                     <CircularProgress className={classes.progress} variant="static" value={uploadProgressItem ? uploadProgressItem.percentage : 0} />
                 </div>
-            );
+            )
         }
     }
 
     const sendRequest = (file: File) => {
         return new Promise((resolve, reject) => {
-            const req = new XMLHttpRequest();
+            const req = new XMLHttpRequest()
 
             req.upload.addEventListener("progress", event => {
                 if (event.lengthComputable) {
@@ -87,12 +84,12 @@ export default function UploadFile(props: Readonly<OnChange>) {
                 if (req.readyState === XMLHttpRequest.DONE && req.status === 200) {
                     resolve(req.responseText)
                 }
-            };
+            }
 
             const formData = new FormData()
             formData.append("file", file, file.name)
 
-            req.open("POST", "/api/server/upload");
+            req.open("POST", "/api/server/upload")
             req.send(formData)
         })
     }
@@ -106,11 +103,11 @@ export default function UploadFile(props: Readonly<OnChange>) {
         Promise.all(promises).then((response) => {
             setSuccessfullUploaded(true)
             setUploading(false)
+            setResponse(response)
         }).catch((error) => {
             setSuccessfullUploaded(true)
             setUploading(false)
         })
-
     }
 
     const renderActions = () => {
@@ -121,13 +118,14 @@ export default function UploadFile(props: Readonly<OnChange>) {
                         setFiles([] as Array<File>)
                         setSuccessfullUploaded(false)
                     }}>Limpar</Button>
-            );
+
+            )
         } else {
             return (
                 <Button variant="contained" color="primary"
                     disabled={files.length < 0 || uploading}
                     onClick={uploadFiles}>Enviar</Button>
-            );
+            )
         }
     }
 
@@ -139,19 +137,32 @@ export default function UploadFile(props: Readonly<OnChange>) {
                         <Grid item xs={12} style={{ marginTop: 15 }}>
                             {files.map(file => {
                                 return (
-                                    <div key={file.name} className={classes.row}>                       
+                                    <div key={file.name} className={classes.row}>
                                         <span className="Filename">{file.name}</span>
                                         {renderProgress(file)}
                                     </div>
                                 )
                             })}
+                            {response ? (
+                                <GridList cellHeight={240} cols={4}>
+                                <GridListTile key="Subheader" cols={4} style={{ height: 'auto' }}>
+                                    <ListSubheader component="div">Todas as Imagens</ListSubheader>
+                                </GridListTile>
+                                {response.map((value, index) => (
+                                    <GridListTile key={index}>
+                                        <img alt={value} src={value.replace(/"/g, '').replace(/\\\\/g, '\\')} 
+                                        onClick={() => props.onPick(value.replace(/"/g, '').replace(/\\\\/g, '\\'))}/>
+                                    </GridListTile>
+                                ))}
+                            </GridList>
+                            ) : ('')}
                         </Grid>
 
                         <Grid item xs={12} style={{ marginTop: 5 }}>
                             <div className="Actions">{renderActions()}</div>
                         </Grid>
                     </>
-                    ) : (
+                ) : (
                         <Grid item xs={12} style={{ marginTop: 15 }}>
                             <DropZone disabled={uploading || successfullUploaded} onFilesAdded={onFilesAdded}>
                                 <p>Escolha suas imagens</p>

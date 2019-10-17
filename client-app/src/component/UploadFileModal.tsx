@@ -1,8 +1,9 @@
 import React, { ReactNode, useRef } from 'react'
 import UploadFile from './UploadFile'
 import MyModal, { RefMyModal } from './MyModal';
+import UploadListFile from './UploadListFile';
 
-interface OnChange {
+export interface OnChange {
     onPick: (img: string) => void
     children?: ReactNode
 }
@@ -25,7 +26,7 @@ export default function UploadFileModal(props: Readonly<OnChange>) {
                 labelTabs={["Upload de Imagens", "Todas as Imagens"]}
                 renderItens={[
                     <UploadFile onPick={handlePick} />,
-                    <p style={{height: '80vh'}}>Todas as Imagens</p>
+                    <UploadListFile onPick={handlePick}/>
                 ]} />
         </>
     )

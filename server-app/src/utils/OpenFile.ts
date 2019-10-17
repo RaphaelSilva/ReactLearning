@@ -38,4 +38,8 @@ export default class OpenFile {
       }
     }
   }
+
+  static listAllFiles (path: fs.PathLike): Array<string> {
+    return fs.readdirSync(this.rootPublic + path)
+  }
 }
