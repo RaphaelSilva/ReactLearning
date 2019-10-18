@@ -48,6 +48,8 @@ export default class ProductServiceRepository {
     try {
       // validate all fields of product importante to save
       this.valideting(product)
+      const result = await this.checkTagLink(product.tagLink, product.id)
+      if (result.length > 0) return { message: `Ops! Parece que alguem já escolheu esse link: ${product.tagLink}`, variant: 'warning' }
       // true: update product to DB if id is null
 
       if (product.id) {
@@ -65,14 +67,12 @@ export default class ProductServiceRepository {
     }
   }
 
-  public checkTagLink = (profileId: number, value: string, productId?: number): Promise<Array<Product>> => {
+  public checkTagLink = (value: string, productId?: number): Promise<Array<Product>> => {
     return productId ? this.productDao.fetchBy([
-      profileId,
       value,
       productId
-    ], 'profileId = ? AND tagLink = ? AND id <> ?') : this.productDao.fetchBy([
-      profileId,
+    ], 'tagLink = ? AND id <> ?') : this.productDao.fetchBy([
       value
-    ], 'profileId = ? AND tagLink = ?')
+    ], 'tagLink = ?')
   }
 }

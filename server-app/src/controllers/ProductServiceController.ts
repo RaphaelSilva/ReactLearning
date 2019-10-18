@@ -90,7 +90,7 @@ export default class ProductServiceController extends AController {
     const value = req.params.tagLink
     const productId = req.params.productId
     ADao.debug = true
-    this.productServiceRepository.checkTagLink(req.userAuth.profileId, value, productId).then((list) => {
+    this.productServiceRepository.checkTagLink(value, parseInt(productId)).then((list) => {
       if (list.length === 0) {
         this.sendResponseView(res, {
           variant: 'success',
