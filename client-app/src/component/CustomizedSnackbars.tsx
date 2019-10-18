@@ -50,11 +50,6 @@ const CustomizedSnackbars = forwardRef((props: Readonly<{}>, ref) => {
     const [open, setOpen] = React.useState(false)    
     
     const handleClose = (event?: SyntheticEvent, reason?: string) => {
-        if (reason === 'clickaway') {
-            console.log('clickaway')
-            return
-        }
-        
         setOpen(false)
     }
     

@@ -46,12 +46,10 @@ export default class ProductServiceRepository {
 
   public update = async (product: Product): Promise<ResponseView & { product?: Product }> => {
     try {
-      console.log(product.id)
       // validate all fields of product importante to save
       this.valideting(product)
       // true: update product to DB if id is null
-      console.log(product.id)
-      
+
       if (product.id) {
         await this.productDao.update(product)
         return { message: `Produto ${product.name} atualizado com sucesso!`, variant: 'success' }
@@ -65,5 +63,16 @@ export default class ProductServiceRepository {
       console.log(error)
       return { message: `Ops! não podemos atualizar seu produto ${product.name}`, variant: 'warning' }
     }
+  }
+
+  public checkTagLink = (profileId: number, value: string, productId?: number): Promise<Array<Product>> => {
+    return productId ? this.productDao.fetchBy([
+      profileId,
+      value,
+      productId
+    ], 'profileId = ? AND tagLink = ? AND id <> ?') : this.productDao.fetchBy([
+      profileId,
+      value
+    ], 'profileId = ? AND tagLink = ?')
   }
 }

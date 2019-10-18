@@ -191,8 +191,7 @@ export default function BodyPerfil(props: Readonly<IBodyPerfil>) {
                                                 const isNumber = (keyCode >= 96 && keyCode <= 105) || (keyCode >= 48 && keyCode <= 57)
                                                 const isDel = keyCode === 8 || keyCode === 46
                                                 const i = value.replace(/\D/g, '')
-                                                const m = cMask.replace(/\D/g, '')
-                                                console.log(`i=[${i.length}]  t=[${m.length}] & isNumber=[${isNumber}] isDel=[${isDel}]`)
+                                                const m = cMask.replace(/\D/g, '')                                                
                                                 if (i.length >= m.length && isNumber) return 0 // 11
                                                 if (m.length >= 11 && isDel) return 1
                                                 return m.length === 11 ? 0 : 1

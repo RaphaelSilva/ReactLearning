@@ -167,7 +167,7 @@ export default class ADao<K extends EntitiId> {
   }
 
   public list = (parse?: Function): Promise<Array<K>> => {
-    const select = this.buildSelect(this.fields) + this.fromTable()
+    const select = this.buildSelect() + this.fromTable()
     return this.getResults<K>({ sql: select }, parse)
   }
 

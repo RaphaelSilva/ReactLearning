@@ -1,7 +1,7 @@
-import React, { ChangeEvent, useState, FormEvent } from 'react'
-import { Product } from '../../models/DBEntities'
+import React, { ChangeEvent, useState, FormEvent, useEffect, ReactNode } from 'react'
+import { Product, ProductType } from '../../models/DBEntities'
 import { Paper, Grid, Avatar, IconButton, makeStyles, CssBaseline, AppBar, Toolbar, Typography } from '@material-ui/core'
-import { fetchPost } from '../../utils/FUtil'
+import { fetchPost, fetchGet } from '../../utils/FUtil'
 import UploadFileModal from '../../component/UploadFileModal'
 import Camera from '@material-ui/icons/Camera'
 import SaveIcon from '@material-ui/icons/Save';
@@ -17,7 +17,6 @@ interface IProductUpdate {
 
 const useStyles = makeStyles(theme => ({
     paper: {
-        padding: theme.spacing(2),
         display: 'flex',
         overflow: 'auto',
         flexDirection: 'column',
@@ -41,17 +40,33 @@ const useStyles = makeStyles(theme => ({
     grow: {
         flexGrow: 1,
     },
+    gridItem: {
+        padding: theme.spacing(2),
+    },
 }))
 
 export default function ProductUpdate(props: Readonly<IProductUpdate>) {
     const classes = useStyles()
     const [product, setProduct] = useState(props.product)
+    const [productTypeList, setProductTypeList] = useState([] as Array<ProductType>)
+
+    useEffect(() => {
+        fetchGet<Array<ProductType>>('/api/product/listTypes')
+            .then((productTypes) => {
+                setProductTypeList(productTypes)
+            })
+    }, [])
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setProduct({
             ...product,
             [e.target.name]: e.target.value
         })
+    }
+
+    const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>, child: ReactNode, ) => {
+        product.productTypeId = parseInt(event.target.value)
+        setProduct({ ...product })
     }
 
     const handlePickImage = (img: string) => {
@@ -61,20 +76,29 @@ export default function ProductUpdate(props: Readonly<IProductUpdate>) {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log(JSON.stringify(product))
         fetchPost<ResponseView & { product?: Product }>('/api/product/save',
             JSON.stringify(product)).then((result) => {
-                console.log(result)
                 props.onUpdate(result)
             }).catch(() => props.onUpdate(null))
     }
 
+    const valideTagLink = async (value: string) => {        
+        return await fetchGet<ResponseView>(`/api/product/valideteTagLink/${value}/${product.id}`).then((result)=>{
+            return result
+        })
+    }
+
+    // xs, extra-small: 0px
+    // sm, small: 600px
+    // md, medium: 960px()
+    // lg, large: 1280px
+    // xl, extra-large: 1920px
     return (<>
         <CssBaseline />
         <form className={classes.form} onSubmit={handleSubmit}>
             <Paper style={{ height: '80vh' }} className={classes.paper}>
                 <Grid container >
-                    <Grid item xs={12}>
+                    <Grid item className={classes.gridItem} md={1} sm={3} xs={12}>
                         <FieldValidated className={classes.field}
                             name="code" id="product.code" required={true}
                             label="Codigo" value={product.code}
@@ -82,7 +106,7 @@ export default function ProductUpdate(props: Readonly<IProductUpdate>) {
                             inputProps={{ maxLength: "35" }}
                             title="Preencha o campo Codigo" />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item className={classes.gridItem} md={3} sm={5} xs={12}>
                         <FieldValidated className={classes.field}
                             name="name" id="product.name" required={true}
                             label="Name" value={product.name}
@@ -90,40 +114,50 @@ export default function ProductUpdate(props: Readonly<IProductUpdate>) {
                             inputProps={{ maxLength: "50" }}
                             title="Preencha o campo Name" />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item className={classes.gridItem} md={2} sm={4} xs={12}>
+                        <FieldValidated className={classes.field}
+                            name="tagLink" id="product.tagLink" required={true}
+                            label="Link" value={product.tagLink}
+                            inputProps={{ maxLength: "64" }}
+                            onChange={handleInputChange}
+                            getValideted={valideTagLink}
+                        />
+                    </Grid>
+                    <Grid item className={classes.gridItem} md={6} sm={12} xs={12}>
                         <FieldValidated className={classes.field}
                             name="description" id="product.description" required={true}
                             label="Descrição" value={product.description}
                             inputProps={{ maxLength: "120" }}
                             onChange={handleInputChange} />
                     </Grid>
-                    <Grid item xs={12}>
-                        <FieldValidated className={classes.field}
-                            name="readMore" id="product.readMore" required={true}
-                            label="Informação extra" value={product.readMore}
-                            multiline rowsMax="5"
-                            onChange={handleInputChange} />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FieldValidated className={classes.field}
-                            name="tagLink" id="product.tagLink" required={true}
-                            label="Link" value={product.tagLink}
-                            inputProps={{ maxLength: "64" }}
-                            onChange={handleInputChange} />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FieldValidated className={classes.field}
-                            name="productTypeId" id="product.productTypeId" required={true}
-                            label="Descrição" value={product.productTypeId}
-                            onChange={handleInputChange} />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Avatar alt="Remy Sharp" src={product.img} className={classes.bigAvatar} />
-                        <UploadFileModal onPick={handlePickImage} >
-                            <IconButton color="default" aria-label="directions">
-                                <Camera />
-                            </IconButton>
-                        </UploadFileModal>
+                    <Grid container >
+                        <Grid item className={classes.gridItem} md={2} sm={3} xs={12}>
+                            <Avatar alt="Remy Sharp" src={product.img} className={classes.bigAvatar} />
+                            <UploadFileModal onPick={handlePickImage} >
+                                <IconButton color="default" aria-label="directions">
+                                    <Camera />
+                                </IconButton>
+                            </UploadFileModal>
+                        </Grid>
+                        <Grid item className={classes.gridItem} md={2} sm={3} xs={12}>
+                            <FieldValidated className={classes.field}
+                                name="productTypeId" id="product.productTypeId" required={true}
+                                label="Tipo de Produto" value={product.productTypeId}
+                                onChangeSelect={handleChangeSelect} select
+                                invalidMessage={{ valueMissing: "Selecione o tipo de produto" }}
+                                assert={(el) => el.target.value ? el.target.value.length > 0 : false}>
+                                <option value="" />
+                                {productTypeList.map((pType, index) =>
+                                    (<option value={pType.id} key={index} >{pType.name}</option>))}
+                            </FieldValidated>
+                        </Grid>
+                        <Grid item className={classes.gridItem} md={8} sm={12} xs={12}>
+                            <FieldValidated className={classes.field}
+                                name="readMore" id="product.readMore" required={true}
+                                label="Informação extra" value={product.readMore}
+                                multiline rowsMax="10"
+                                onChange={handleInputChange} />
+                        </Grid>
                     </Grid>
                 </Grid>
             </Paper>

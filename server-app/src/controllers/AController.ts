@@ -9,7 +9,7 @@ export class AController {
       } as ResponseView)
     }
 
-    protected setResponseView = (res: Response, rv: ResponseView): void => {
+    protected sendResponseView = (res: Response, rv: ResponseView): void => {
       res.json(rv)
     }
 }

@@ -46,7 +46,7 @@ export default class MemberController extends AController {
   private updateProfessional = (req: Request, res: Response): void => {
     const professional = req.body as Professional
     this.profileRepository.updateProfile(professional).then((result) => {
-      this.setResponseView(res, result)
+      this.sendResponseView(res, result)
     }).catch(error => this.sendError(res, error,
       'Problemas no servidor para atualizar professional [MCUP]'))
   }

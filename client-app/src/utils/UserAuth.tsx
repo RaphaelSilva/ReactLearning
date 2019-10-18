@@ -48,9 +48,7 @@ export default class UserAuth implements Authenticated{
         return fetch(this.route).then((res) => {
             res.json().then((data: UserAuth) => {
                 this.name = data.name
-                this.isAuthenticated = data.isAuthenticated
-                console.log(data)
-                console.log(this)
+                this.isAuthenticated = data.isAuthenticated                
             })
         })
     }

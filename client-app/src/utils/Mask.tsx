@@ -2,8 +2,7 @@ import VMasker from 'vanilla-masker'
 
 export default class Mask {
 
-    static maskDinamicyHandler(masks: Array<string>, max: number, event: { target: any; }) {
-        console.log("aqui");        
+    static maskDinamicyHandler(masks: Array<string>, max: number, event: { target: any; }) {     
         var c = event.target;
         var v = c.value.replace(/\D/g, '');
         var m = v.length > max ? 1 : 0;

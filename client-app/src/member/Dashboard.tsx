@@ -105,8 +105,8 @@ export default function Dashboard(props: Readonly<ISecurityComponet>) {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
 
-  const handleDrawerOpen = () => {
-    setOpen(true)
+  const handleDrawer = () => {
+    setOpen(!open)
   }
   const handleDrawerClose = () => {
     setOpen(false)
@@ -128,10 +128,10 @@ export default function Dashboard(props: Readonly<ISecurityComponet>) {
   return (
     <div className={classes.root}>
       <CssBaseline />      
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <AppBar position="absolute" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
-          <IconButton edge="start" color="inherit" aria-label="open drawer" onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)} >
+          <IconButton edge="start" color="inherit" aria-label="open drawer" onClick={handleDrawer}
+            className={classes.menuButton} >
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
