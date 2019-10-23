@@ -18,6 +18,10 @@ interface IProductUpdate {
 }
 
 const useStyles = makeStyles(theme => ({
+    root:{
+        maxWidth: '1500px',
+        overflowX: 'auto',
+    },
     paper: {
         display: 'flex',
         overflow: 'auto',
@@ -95,7 +99,7 @@ export default function ProductUpdate(props: Readonly<IProductUpdate>) {
     // md, medium: 960px()
     // lg, large: 1280px
     // xl, extra-large: 1920px
-    return (<>
+    return (<div className={classes.root} id="temp-raphael">
         <CssBaseline />
         <form className={classes.form} onSubmit={handleSubmit}>
             <Paper style={{ height: '80vh' }} className={classes.paper}>
@@ -199,5 +203,5 @@ export default function ProductUpdate(props: Readonly<IProductUpdate>) {
                 </Toolbar>
             </AppBar>
         </form>
-    </>)
+    </div>)
 }

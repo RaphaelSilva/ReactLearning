@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme: Theme) =>
         table: {
             minWidth: 650,
         },
+        tableWrapper: {
+            overflowX: 'auto',
+        },
     }),
 );
 
@@ -103,11 +106,11 @@ const PaymentUpdate = forwardRef((props: Readonly<PaymentUpdateProps>, ref: Ref<
         if (show) return (
             <TableRow key="newPayment">
                 <TableCell component="th" scope="row">
-                    <TextField className={classes.newPaymentInput} autoFocus name="name" id="payment.name" inputProps={{maxLength: 50}}/>
+                    <TextField className={classes.newPaymentInput} autoFocus name="name" id="payment.name" inputProps={{ maxLength: 50 }} />
                 </TableCell>
-                <TableCell align="right"><TextField className={classes.newPaymentInput} inputProps={{maxLength: 80}}
+                <TableCell align="right"><TextField className={classes.newPaymentInput} inputProps={{ maxLength: 80 }}
                     name="description" id="payment.description" /></TableCell>
-                <TableCell align="right"><TextField className={classes.newPaymentInput} 
+                <TableCell align="right"><TextField className={classes.newPaymentInput}
                     name="value" id="payment.value" ref={(input: HTMLInputElement) => {
                         if (input) {
                             Mask.setMaskMoney<HTMLInputElement>(input.getElementsByTagName('input')[0])
@@ -121,51 +124,53 @@ const PaymentUpdate = forwardRef((props: Readonly<PaymentUpdateProps>, ref: Ref<
         )
     }
 
-useImperativeHandle<Array<Payment>, Array<Payment>>(ref, () => payments, [payments])
+    useImperativeHandle<Array<Payment>, Array<Payment>>(ref, () => payments, [payments])
 
-return (
-    <div className={classes.root}>
-        <Divider/>
-        <Paper className={classes.paper}>
-            <Table className={classes.table} size="small" aria-label="a dense table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Meio&nbsp;de&nbsp;Pagamento</TableCell>
-                        <TableCell >Descrição</TableCell>
-                        <TableCell align="right">Valor&nbsp;<strong>(R$)</strong></TableCell>
-                        <TableCell align="right">
-                            <div className={classes.divAcation}>
-                                <strong>Ação&nbsp;&nbsp;&nbsp;</strong>
-                                <Divider className={classes.divider} orientation='vertical' />
-                                <IconButton color="primary" ref={(el) => {
-                                    if (el && focusAdd) {
-                                        (el as HTMLButtonElement).focus()
-                                        setFocusAdd(false)
-                                    }
-                                }}
-                                    aria-label="directions"
-                                    onClick={() => setInsertPayment(true)}>
-                                    <Add />
-                                </IconButton>
-                            </div>
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rennderNewPayment(insertPayment)}
-                    {payments.map((payment, index) => (
-                        <TableRow key={index}>
-                            <TableCell component="th" scope="row">{payment.name}</TableCell>
-                            <TableCell>{payment.description}</TableCell>
-                            <TableCell align="right">{VMasker.toMoney(payment.value)}</TableCell>
-                            <TableCell align="right"><Button onClick={() => removePayment(payment, index)}>Excluir</Button></TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </Paper>
-    </div >
-)
+    return (
+        <div className={classes.root}>
+            <Divider />
+            <Paper className={classes.paper}>
+                <div className={classes.tableWrapper}>
+                    <Table className={classes.table} size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Meio&nbsp;de&nbsp;Pagamento</TableCell>
+                                <TableCell >Descrição</TableCell>
+                                <TableCell align="right">Valor&nbsp;<strong>(R$)</strong></TableCell>
+                                <TableCell align="right">
+                                    <div className={classes.divAcation}>
+                                        <strong>Ação&nbsp;&nbsp;&nbsp;</strong>
+                                        <Divider className={classes.divider} orientation='vertical' />
+                                        <IconButton color="primary" ref={(el) => {
+                                            if (el && focusAdd) {
+                                                (el as HTMLButtonElement).focus()
+                                                setFocusAdd(false)
+                                            }
+                                        }}
+                                            aria-label="directions"
+                                            onClick={() => setInsertPayment(true)}>
+                                            <Add />
+                                        </IconButton>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rennderNewPayment(insertPayment)}
+                            {payments.map((payment, index) => (
+                                <TableRow key={index}>
+                                    <TableCell component="th" scope="row">{payment.name}</TableCell>
+                                    <TableCell>{payment.description}</TableCell>
+                                    <TableCell align="right">{VMasker.toMoney(payment.value)}</TableCell>
+                                    <TableCell align="right"><Button onClick={() => removePayment(payment, index)}>Excluir</Button></TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            </Paper>
+        </div >
+    )
 })
 
 export default PaymentUpdate
