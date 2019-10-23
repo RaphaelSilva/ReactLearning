@@ -30,6 +30,11 @@ export default class ProductServiceController extends AController {
       this.instance.save
     ])
 
+    app.delete(`${routePrefix}/remove/:productId`, [
+      MemberLoginController.instance.isUserAuth,
+      this.instance.remove
+    ])
+
     app.get(`${routePrefix}/valideteTagLink/:tagLink/:productId`, [
       MemberLoginController.instance.isUserAuth,
       this.instance.valideteTagLink
@@ -85,13 +90,19 @@ export default class ProductServiceController extends AController {
 
   private save = (req: Request, res: Response): void => {
     const product = req.body as Product
-    console.log(product)
-
     product.profileId = req.userAuth.profileId
     this.productServiceRepository.update(product).then((result) => {
       this.sendResponseView(res, result)
     }).catch(error => this.sendError(res, error,
-      'Problemas no servidor para atualizar professional [PSCSP]'))
+      'Problemas no servidor para atualizar produto [PSCSP]'))
+  }
+
+  private remove = (req: Request, res: Response): void => {
+    const productId = req.params.productId
+    this.productServiceRepository.remove(parseInt(productId)).then((result) => {
+      this.sendResponseView(res, result)
+    }).catch(error => this.sendError(res, error,
+      'Problemas no servidor para excluir produto [PSCRP]'))
   }
 
   private valideteTagLink = (req: Request, res: Response): void => {

@@ -49,3 +49,25 @@ export function fetchGet<T>(url: string): Promise<T> {
         })
     })    
 }
+
+export function fetchDelete<T>(url: string): Promise<T> {
+    return new Promise((resolve, rejection) => {
+        fetch(url, {
+            method: 'delete'
+        }).then((response: Response) => {
+            if (response.status === 200) {                
+                response.json().then((data) => {                    
+                    if (response.status === 200) {
+                        resolve(data)
+                    } else {
+                        rejection(data)
+                    }
+                })
+            } else {
+                rejection(response)
+            }
+        }).catch((error) => {
+            rejection(error)
+        })
+    })    
+}

@@ -4,7 +4,7 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
+import Delete from '@material-ui/icons/Delete';
 import Add from '@material-ui/icons/Add';
 
 import { ProductInfo } from '../../models/Entities';
@@ -92,51 +92,56 @@ const ProductInfoUpdate = forwardRef((props: Readonly<ProductInfoProps>, ref: Re
         })
     }
 
+    const removeProductInfo = (i: number) => {
+        setProductInfos(productInfos.filter((_value, index) => {
+            return index !== i
+        }))
+    }
+
     const renderNewProductInfo = () => {
-        return (<Grid item xs={3}>
+        return (
             <Grid container direction="row">
-                <Grid item xs={5}>
+                <Grid item xs={12} sm={5}>
                     <img className={classes.img} src={productInfo.img} alt={productInfo.description} />
                 </Grid>
-                <Grid item xs={7}>
-                    <Grid container direction="column" justify="center" alignItems="center">
-                        <Grid item>
+                <Grid item xs={12} sm={7}>
+                    <Grid container direction="row" justify="flex-start" alignItems="center">
+                        <Grid item xs={12}>
                             <TextField inputProps={{ maxLength: 50 }} className={classes.textField}
                                 value={productInfo.title} name="title" label="Titulo"
                                 id="productInfo.title" onChange={handleOnChangeNewProduct} />
                         </Grid>
-                        <Grid item>
+                        <Grid item xs={12}>
                             <TextField inputProps={{ maxLength: 50 }} className={classes.textField}
                                 value={productInfo.description} name="description" label="Descrição"
                                 id="productInfo.description" onChange={handleOnChangeNewProduct} />
                         </Grid>
-                        <Grid item container direction="row" justify="flex-end" alignItems="center">
-                            <Divider orientation='vertical' className={classes.divider} />
-                            <Button onClick={() => handleAddButtonProductInfo()}>Adicionar</Button>
-                            <Divider orientation='vertical' className={classes.divider} />
-                            <Button>Cancelar</Button>
-                            <Divider orientation='vertical' className={classes.divider} />
-                        </Grid>
+                    </Grid>
+                    <Grid item container direction="row" justify="flex-end" alignItems="center">
+                        <Divider orientation='vertical' className={classes.divider} />
+                        <Button onClick={() => handleAddButtonProductInfo()}>Adicionar</Button>
+                        <Divider orientation='vertical' className={classes.divider} />
+                        <Button onClick={() => {
+                            setAddProductInfoShow(false)
+                            setProductInfo(ParseProductInfo())
+                        }}>Cancelar</Button>
+                        <Divider orientation='vertical' className={classes.divider} />
                     </Grid>
                 </Grid>
             </Grid>
-        </Grid>)
+        )
     }
 
     const renderButtonAddNewProductInfo = () => {
         return (
-
-            <Grid item xs={1}>
-                <UploadFileModal onPick={handlePickImage} >
-                    <IconButton color="primary">
-                        <Add />
-                        <Typography>
-                            Informação
+            <UploadFileModal onPick={handlePickImage} >
+                <IconButton color="primary">
+                    <Add />
+                    <Typography>
+                        Informação
                         </Typography>
-                    </IconButton>
-                </UploadFileModal>
-            </Grid>
-
+                </IconButton>
+            </UploadFileModal>
         )
     }
 
@@ -145,8 +150,10 @@ const ProductInfoUpdate = forwardRef((props: Readonly<ProductInfoProps>, ref: Re
         <div className={classes.root}>
             <Divider />
             <Grid container>
-                {addProductInfoShow ? renderNewProductInfo() : renderButtonAddNewProductInfo()}
-                <Grid item xs={addProductInfoShow ? 9 : 11}>
+                <Grid item xs={12}>
+                    {addProductInfoShow ? renderNewProductInfo() : renderButtonAddNewProductInfo()}
+                </Grid>
+                <Grid item xs={12}>
                     <GridList cellHeight={180} className={classes.gridList} cols={2.5}>
                         {productInfos.map((item, index) => (
                             <GridListTile key={index}>
@@ -155,8 +162,10 @@ const ProductInfoUpdate = forwardRef((props: Readonly<ProductInfoProps>, ref: Re
                                     title={item.title}
                                     subtitle={<span>by: {item.description}</span>}
                                     actionIcon={
-                                        <IconButton aria-label={`info about ${item.description}`} className={classes.icon}>
-                                            <InfoIcon />
+                                        <IconButton aria-label={`info about ${item.description}`}
+                                            className={classes.icon}
+                                            onClick={() => { removeProductInfo(index) }}>
+                                            <Delete />
                                         </IconButton>
                                     }
                                 />
