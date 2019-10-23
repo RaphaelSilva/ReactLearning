@@ -62,19 +62,79 @@ INSERT INTO product ( code, name, description, img, readMore, tagLink, registerD
 VALUES ('XPTO', 'Personal', 'Aulas Personalizadas e Individual', @img,
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
   'personal', UTC_DATE(),  2, @profileId );
+SELECT LAST_INSERT_ID() INTO @productId;
+INSERT INTO payment ( name,description,img,value,productId ) VALUES
+  ('1 Aula', 'Aulas Avulsa com duração de 1 dia', @img,'80.53', @productId),
+  ('4 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'75.38', @productId),
+  ('8 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'67.82', @productId),
+  ('12 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'63.25', @productId),
+  ('6 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'59.98', @productId);
+  
+INSERT INTO productInfo ( productId,title,description,img ) VALUES
+  (@productId, 'Titulo 0 Info', 'Descrição do produto 0', @img),
+  (@productId, 'Titulo 1 Info', 'Descrição do produto 1', @img),
+  (@productId, 'Titulo 2 Info', 'Descrição do produto 2', @img);
+
 INSERT INTO product ( code, name, description, img, readMore, tagLink, registerDate, productTypeId, profileId )
 VALUES ('XPTO', 'Funcional Kids', 'bla Funcional Kids bla Funcional Kids bla', @img,
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
   'funcionalKids', UTC_DATE(),  1, @profileId );
+SELECT LAST_INSERT_ID() INTO @productId;
+INSERT INTO payment ( name,description,img,value,productId ) VALUES
+  ('1 Aula', 'Aulas Avulsa com duração de 1 dia', @img,'80.53', @productId),
+  ('4 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'75.38', @productId),
+  ('8 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'67.82', @productId),
+  ('12 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'63.25', @productId),
+  ('16 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'59.98', @productId);
+INSERT INTO productInfo ( productId,title,description,img ) VALUES
+  (@productId, 'Titulo 0 Info', 'Descrição do produto 0', @img),
+  (@productId, 'Titulo 1 Info', 'Descrição do produto 1', @img),
+  (@productId, 'Titulo 2 Info', 'Descrição do produto 2', @img);
+
 INSERT INTO product ( code, name, description, img, readMore, tagLink, registerDate, productTypeId, profileId )
 VALUES ('XPTO', 'Funcional', 'bla Funcional Lagoa bla Funcional Lagoa bla', @img,
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
   'funcionalLagoa', UTC_DATE(),  1, @profileId );
+SELECT LAST_INSERT_ID() INTO @productId;
+INSERT INTO payment ( name,description,img,value,productId ) VALUES
+  ('1 Aula', 'Aulas Avulsa com duração de 1 dia', @img,'80.53', @productId),
+  ('4 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'75.38', @productId),
+  ('8 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'67.82', @productId),
+  ('12 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'63.25', @productId),
+  ('16 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'59.98', @productId);
+INSERT INTO productInfo ( productId,title,description,img ) VALUES
+  (@productId, 'Titulo 0 Info', 'Descrição do produto 0', @img),
+  (@productId, 'Titulo 1 Info', 'Descrição do produto 1', @img),
+  (@productId, 'Titulo 2 Info', 'Descrição do produto 2', @img);
+
 INSERT INTO product ( code, name, description, img, readMore, tagLink, registerDate, productTypeId, profileId )
 VALUES ('XPTO', 'Fast Hiits', 'bla Fast Hiits bla Fast Hiits bla', @img,
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
   'fastHiits', UTC_DATE(),  1, @profileId );
+SELECT LAST_INSERT_ID() INTO @productId;
+INSERT INTO payment ( name,description,img,value,productId ) VALUES
+    ('1 Aula', 'Aulas Avulsa com duração de 1 dia', @img,'80.53', @productId),
+    ('4 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'75.38', @productId),
+    ('8 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'67.82', @productId),
+    ('12 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'63.25', @productId),
+    ('16 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'59.98', @productId);
+INSERT INTO productInfo ( productId,title,description,img ) VALUES
+    (@productId, 'Titulo 0 Info', 'Descrição do produto 0', @img),
+    (@productId, 'Titulo 1 Info', 'Descrição do produto 1', @img),
+    (@productId, 'Titulo 2 Info', 'Descrição do produto 2', @img);
+
 INSERT INTO product ( code, name, description, img, readMore, tagLink, registerDate, productTypeId, profileId )
 VALUES ('XPTO', 'Brilhantina', 'bla Brilhantina bla Brilhantina bla', @img,
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
   'brilhantina', UTC_DATE(),  1, @profileId );
+SELECT LAST_INSERT_ID() INTO @productId;
+INSERT INTO payment ( name,description,img,value,productId ) VALUES
+    ('1 Aula', 'Aulas Avulsa com duração de 1 dia', @img,'80.53', @productId),
+    ('4 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'75.38', @productId),
+    ('8 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'67.82', @productId),
+    ('12 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'63.25', @productId),
+    ('16 Aulas', 'Aulas Avulsa com duração de 1 dia', @img,'59.98', @productId);
+INSERT INTO productInfo ( productId,title,description,img ) VALUES
+    (@productId, 'Titulo 0 Info', 'Descrição do produto 0', @img),
+    (@productId, 'Titulo 1 Info', 'Descrição do produto 1', @img),
+    (@productId, 'Titulo 2 Info', 'Descrição do produto 2', @img);
