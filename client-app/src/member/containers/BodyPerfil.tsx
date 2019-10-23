@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core'
 import clsx from 'clsx';
 import { fetchPost, fetchGet } from '../../utils/FUtil';
-import { Professional, Contact, Address } from '../../models/DBEntities';
+import { Professional, Contact, Address } from '../../models/Entities';
 import { ParseProfessional, ParseAddress, ParseContact } from '../../models/ParserJson';
 import DateFnsUtils from '@date-io/date-fns';
 import {

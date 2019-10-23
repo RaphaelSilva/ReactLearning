@@ -42,7 +42,7 @@ CREATE TABLE `customer` (
   `name` VARCHAR(20) NULL,
   `lastName` VARCHAR(50) NULL,
   `dateBirth` DATE NULL,
-  `img` VARCHAR(100) NULL,
+  `img` VARCHAR(150) NULL,
   `cpf` VARCHAR(11) NULL,
   `addressId` INT NULL,
   `contactId` INT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE `professional` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `customerId` INT NULL,
   -- it can be same of the customer table at creation
-  `img` VARCHAR(100) NULL,
+  `img` VARCHAR(150) NULL,
   `cnpj` VARCHAR(14) NULL,
   `isAddressShowed` TINYINT NULL,
   `addressId` INT NULL,
@@ -66,7 +66,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE `commerce` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
-  `img` VARCHAR(100) NULL,
+  `img` VARCHAR(150) NULL,
   `cnpj` VARCHAR(14) NULL,
   `addressId` INT NULL,
   `contactId` INT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE `product` (
   `code` VARCHAR(35) NULL,
   `name` VARCHAR(50) NULL,
   `description` VARCHAR(120) NULL,
-  `img` VARCHAR(100) NULL,
+  `img` VARCHAR(150) NULL,
   `readMore` TEXT NULL, -- If it isn't a good ideia do it in a file
   `tagLink` VARCHAR(64) NULL, -- This columm can be indexed by tag too
   `registerDate` DATE NULL,
@@ -129,8 +129,9 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE `productInfo` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `productId` INT NULL,
-  `description` VARCHAR(80) NULL,
-  `img` VARCHAR(100) NULL,
+  `title` VARCHAR(80) NULL,
+  `description` VARCHAR(100) NULL,
+  `img` VARCHAR(150) NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -139,7 +140,8 @@ CREATE TABLE `payment` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
   `description` VARCHAR(80) NULL,
-  `value` DECIMAL(5,3) NULL,
+  `img` VARCHAR(150) NULL,
+  `value` DECIMAL(8,3) NULL, -- 99.999,999
   `productId` INT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB

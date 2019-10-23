@@ -1,4 +1,4 @@
-import { Product, Profile, Professional } from "./DBEntities";
+import { Product, Profile, Professional } from "./Entities";
 
 export interface ProductAndType {
     id: number;

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState, FormEvent, useEffect, ReactNode } from 'react'
-import { Product, ProductType } from '../../models/DBEntities'
+import { Product, ProductType } from '../../models/Entities'
 import { Paper, Grid, Avatar, IconButton, makeStyles, CssBaseline, AppBar, Toolbar, Typography } from '@material-ui/core'
 import { fetchPost, fetchGet } from '../../utils/FUtil'
 import UploadFileModal from '../../component/UploadFileModal'
@@ -8,6 +8,8 @@ import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import FieldValidated from '../../component/FieldValidated'
 import { ResponseView } from '../../models/ViewModels'
+import PaymentUpdate from './PaymentUpdate'
+import ProductInfoUpdate from './ProductInfoUpdate'
 
 interface IProductUpdate {
     product: Product
@@ -82,8 +84,8 @@ export default function ProductUpdate(props: Readonly<IProductUpdate>) {
             }).catch(() => props.onUpdate(null))
     }
 
-    const valideTagLink = async (value: string) => {        
-        return await fetchGet<ResponseView>(`/api/product/valideteTagLink/${value}/${product.id}`).then((result)=>{
+    const valideTagLink = async (value: string) => {
+        return await fetchGet<ResponseView>(`/api/product/valideteTagLink/${value}/${product.id}`).then((result) => {
             return result
         })
     }
@@ -155,9 +157,27 @@ export default function ProductUpdate(props: Readonly<IProductUpdate>) {
                             <FieldValidated className={classes.field}
                                 name="readMore" id="product.readMore" required={true}
                                 label="Informação extra" value={product.readMore}
-                                multiline rowsMax="10"
+                                multiline rowsMax="15"
                                 onChange={handleInputChange} />
                         </Grid>
+                    </Grid>
+                </Grid>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <ProductInfoUpdate productId={product.id} ref={(productInfos) => {
+                            if (productInfos) {
+                                product.productInfos = productInfos
+                                setProduct(product)
+                            }
+                        }} />
+                    </Grid>
+                    <Grid item xs={12} >
+                        <PaymentUpdate productId={product.id} ref={(payments) => {
+                            if (payments) {
+                                product.payments = payments
+                                setProduct(product)
+                            }
+                        }} />
                     </Grid>
                 </Grid>
             </Paper>

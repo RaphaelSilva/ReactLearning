@@ -52,8 +52,8 @@ export default function FieldValidated(props: Readonly<FieldValidatedProps>) {
 
     const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (props.getValideted) props.getValideted(e.target.value)
-            .then((responseView) => { 
-                if(responseView.variant === 'warning'){
+            .then((responseView) => {
+                if (responseView.variant === 'warning') {
                     setInvalidMessage(responseView.message)
                     setFcError(true)
                 }
@@ -114,9 +114,9 @@ export default function FieldValidated(props: Readonly<FieldValidatedProps>) {
 
     return (
         <FormControl className={props.className} error={fcError} >
-            <InputLabel htmlFor={props.id}>{props.label}</InputLabel>
             {props.mask ?
-                (
+                (<>
+                    <InputLabel htmlFor={props.id}>{props.label}</InputLabel>
                     <InputMask mask={props.mask[numMask]}
                         id={props.id} name={props.name} value={props.value}
                         autoFocus={props.autoFocus}
@@ -133,10 +133,13 @@ export default function FieldValidated(props: Readonly<FieldValidatedProps>) {
                             type={props.type}
                         />}
                     </InputMask>
+                </>
                 )
                 : props.select ?
-                    (
+                    (<>
+                        <label htmlFor={'_'+props.id}>{props.label}</label>
                         <NativeSelect
+                            id={'_'+props.id}
                             value={props.value}
                             autoFocus={props.autoFocus}
                             onChange={props.onChangeSelect}
@@ -153,9 +156,10 @@ export default function FieldValidated(props: Readonly<FieldValidatedProps>) {
                         >
                             {props.children}
                         </NativeSelect>
-                    )
+                    </>)
                     :
-                    (
+                    (<>
+                        <InputLabel htmlFor={props.id}>{props.label}</InputLabel>
                         <Input
                             id={props.id} name={props.name} value={props.value}
                             inputProps={props.inputProps}
@@ -169,7 +173,7 @@ export default function FieldValidated(props: Readonly<FieldValidatedProps>) {
                             onInvalid={handleInvalid}
                             onBlur={handleBlur}
                         />
-                    )
+                    </>)
             }
             {fcError ? (<FormHelperText id={describedby}>{invalidMessage}</FormHelperText>) : ''}
         </FormControl>

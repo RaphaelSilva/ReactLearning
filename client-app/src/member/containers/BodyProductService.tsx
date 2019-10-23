@@ -5,7 +5,7 @@ import { ProductAndType, ResponseView } from '../../models/ViewModels'
 import { ISecurityComponet } from '../../component/SecurityComponet'
 import Search from '../../component/Search';
 import MyModal, { RefMyModal } from '../../component/MyModal'
-import { Product } from '../../models/DBEntities'
+import { Product } from '../../models/Entities'
 import ProductUpdate from './ProductUpdate'
 import { ParseProduct } from '../../models/ParserJson'
 import Update from '@material-ui/icons/Update';
@@ -89,8 +89,8 @@ export default function BodyProductService(props: Readonly<ISecurityComponet>) {
         <Paper>
             <Grid container>
                 <Grid item container>
-                    <Grid item xs={8}>
-                        <Search placeholder="Consultar seus Produtos ou Serviços"
+                    <Grid item xs={12}>
+                        <Search placeholder="Consultar seus Produtos ou Serviços" autoFocus
                             fetchText={fetchValueOnText} onButtonClick={onAddButtonClick} />
                     </Grid>
                 </Grid>
@@ -134,7 +134,7 @@ export default function BodyProductService(props: Readonly<ISecurityComponet>) {
         <CustomizedSnackbars ref={refCustomizedSnackbars} />
         <MyModal ref={refMyModal}
             defaultTab={0}
-            labelTabs={[`${product ? "Cadastrar" : "Atualizar"} Produto`, "Plano de pagamento"]}
+            labelTabs={[`${product.id ? "Atualizar" : "Cadastrar"} Produto`, "Pagina modelo"]}
             renderItens={[
                 <ProductUpdate product={product} onUpdate={onProductUpdate} onCancel={onProductCancel} />,
                 <p style={{ height: '80vh' }}>Todas as Imagens</p>

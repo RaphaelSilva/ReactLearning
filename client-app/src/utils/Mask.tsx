@@ -2,7 +2,7 @@ import VMasker from 'vanilla-masker'
 
 export default class Mask {
 
-    static maskDinamicyHandler(masks: Array<string>, max: number, event: { target: any; }) {     
+    static maskDinamicyHandler(masks: Array<string>, max: number, event: { target: any; }) {
         var c = event.target;
         var v = c.value.replace(/\D/g, '');
         var m = v.length > max ? 1 : 0;
@@ -13,7 +13,7 @@ export default class Mask {
 
     static maskStaticHandler(masks: string, event: { target: any; }) {
         var c = event.target;
-        var v = c.value.replace(/\D/g, '');        
+        var v = c.value.replace(/\D/g, '');
         VMasker(c).unMask();
         VMasker(c).maskPattern(masks);
         c.value = VMasker.toPattern(v, masks);
@@ -26,7 +26,7 @@ export default class Mask {
         el.addEventListener('input', this.maskDinamicyHandler.bind(undefined, arrayMask, 10), false);
         // el.addEventListener('blur', this.maskDinamicyHandler.bind(undefined, arrayMask, 10), false);
     }
-    
+
     static setMaskPostalCode(id: string): void {
         const mask = "99999-999"
         const elPostal = document.getElementById(id) as HTMLInputElement
@@ -34,4 +34,20 @@ export default class Mask {
         elPostal.addEventListener('input', this.maskStaticHandler.bind(undefined, mask), false);
         // elPostal.addEventListener('blur', this.maskStaticHandler.bind(undefined, mask), false);
     }
+
+    static handleInputMaskMoney(el: Element){
+        VMasker(el).maskMoney({                
+            precision: 2,                
+            separator: ',',                
+            delimiter: '.',            
+            suffixUnit: 'R$'
+        }); 
+    }
+
+    static setMaskMoney<E extends Element = Element>(el: E) {
+        this.handleInputMaskMoney(el)
+        el.addEventListener('input', this.handleInputMaskMoney.bind(el, el), false)
+    }
+
+
 }

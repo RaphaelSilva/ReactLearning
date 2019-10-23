@@ -1,5 +1,5 @@
 import React from 'react'
-import { Product } from '../../models/DBEntities'
+import { Product } from '../../models/Entities'
 import { Typography, Divider } from '@material-ui/core'
 
 export default function ProductHeader(props: Readonly<{ product: Product }>) {

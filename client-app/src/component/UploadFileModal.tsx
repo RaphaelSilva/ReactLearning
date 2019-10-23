@@ -22,7 +22,7 @@ export default function UploadFileModal(props: Readonly<OnChange>) {
                 {props.children}
             </div>
             <MyModal ref={mRef}
-                defaultTab={0}
+                defaultTab={1}
                 labelTabs={["Upload de Imagens", "Todas as Imagens"]}
                 renderItens={[
                     <UploadFile onPick={handlePick} />,

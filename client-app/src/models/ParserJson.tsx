@@ -1,4 +1,4 @@
-import { Professional, Address, Contact, Profile, Commerce, Product, Customer } from "./DBEntities"
+import { Professional, Address, Contact, Profile, Commerce, Product, Customer, ProductType, ProductInfo } from "./Entities"
 
 export function ParseAddress(data?: any): Address {
     return {
@@ -74,6 +74,13 @@ export function ParseProfile(data?: any): Profile {
     }
 }
 
+export function ParseProductType(data?: any): ProductType {
+    return {
+        description: data ? (data as ProductType).description || '' : '',
+        name: data ? (data as ProductType).name || '' : ''
+    }
+}
+
 export function ParseProduct(data?: any): Product {
     return {
     code: data ? (data as Product).code || '' : '',
@@ -83,7 +90,17 @@ export function ParseProduct(data?: any): Product {
     readMore: data ? (data as Product).readMore || '' : '',
     tagLink: data ? (data as Product).tagLink || '' : '',
     registerDate: data ? (data as Product).registerDate || '' : new Date(),
+    productType: data ? (data as Product).productType || ParseProductType(data) : ParseProductType(),
     productTypeId: data ? (data as Product).productTypeId || 0 : 0,
     profileId: data ? (data as Product).profileId || 0 : 0
+    }
+}
+
+export function ParseProductInfo(data?: any): ProductInfo{
+    return {
+        img: data ? (data as ProductInfo).img || '' : '',
+        description: data ? (data as ProductInfo).description || '' : '',
+        productId: data ? (data as ProductInfo).productId || 0 : 0,
+        title: data ? (data as ProductInfo).title || '' : '',
     }
 }

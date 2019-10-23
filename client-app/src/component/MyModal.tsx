@@ -1,7 +1,7 @@
 import React, { useState, ReactNode, forwardRef, useImperativeHandle } from 'react'
 import {
     Fade, Modal, createStyles, makeStyles, Backdrop,
-    Typography, Box, AppBar, Tab, Tabs, IconButton, Toolbar, Grid
+    Typography, Box, AppBar, Tab, Tabs, IconButton, Grid
 } from '@material-ui/core'
 import Close from '@material-ui/icons/Close'
 
@@ -26,6 +26,7 @@ const useStyles = makeStyles(theme =>
         toolbar: {
             padding: 2,
         },
+
     }),
 )
 
@@ -101,7 +102,7 @@ const MyModal = forwardRef((props: Readonly<IMyModal>, ref) => {
             <Fade in={open}>
                 <div className={classes.root}>
                     <AppBar position="relative">
-                        <Grid container >
+                        <Grid container alignItems="center">
                             <Grid item xs={11}>
                                 <Tabs value={value} onChange={handleChange} aria-label="wrapped label tabs example">
                                     {props.labelTabs.map((label, idx) => {
@@ -112,12 +113,10 @@ const MyModal = forwardRef((props: Readonly<IMyModal>, ref) => {
                                     })}
                                 </Tabs>
                             </Grid>
-                            <Grid item xs={1}>
-                                <Toolbar className={classes.toolbar}>
-                                    <IconButton onClick={handleClose} color="default" aria-label="directions">
-                                        <Close />
-                                    </IconButton>
-                                </Toolbar>
+                            <Grid item xs={1} container direction="row" justify="flex-end" alignItems="center">
+                                <IconButton onClick={handleClose} size="medium">
+                                    <Close />
+                                </IconButton>
                             </Grid>
                         </Grid>
                     </AppBar>

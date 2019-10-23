@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { Button } from '@material-ui/core';
-import { Professional } from '../../models/DBEntities';
+import { Professional } from '../../models/Entities';
 
 interface PerfilProfissionalI {
     professional: Professional

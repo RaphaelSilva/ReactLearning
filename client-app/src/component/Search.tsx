@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 interface PropsTypes {
     placeholder: string
+    autoFocus?: boolean
     fetchText: (text: string) => void
     onButtonClick: ((event: MouseEvent<HTMLButtonElement>) => void)
 }
@@ -48,6 +49,7 @@ export default function Search(props: PropsTypes) {
                 inputProps={{ 'aria-label': 'search google maps' }}
                 onChange={handleOnChane}
                 value={searchText}
+                autoFocus={props.autoFocus}
             />
             <IconButton className={classes.iconButton} aria-label="search" >
                 <SearchIcon />

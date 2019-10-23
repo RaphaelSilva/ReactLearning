@@ -3,7 +3,6 @@ import { AController } from './AController'
 import ProductServiceRepository from './repository/ProductServiceRepository'
 import MemberLoginController from './LoginController'
 import { Product } from '../models/Entities'
-import ADao from '../dao/ADao'
 
 export default class ProductServiceController extends AController {
   static instance: ProductServiceController
@@ -34,6 +33,16 @@ export default class ProductServiceController extends AController {
     app.get(`${routePrefix}/valideteTagLink/:tagLink/:productId`, [
       MemberLoginController.instance.isUserAuth,
       this.instance.valideteTagLink
+    ])
+
+    app.get(`${routePrefix}/listPaymentsOf/:productId`, [
+      MemberLoginController.instance.isUserAuth,
+      this.instance.listPaymentsOf
+    ])
+
+    app.get(`${routePrefix}/listProductInfo/:productId`, [
+      MemberLoginController.instance.isUserAuth,
+      this.instance.listProductInfo
     ])
 
     return this.instance
@@ -70,15 +79,14 @@ export default class ProductServiceController extends AController {
 
   private listTypes = (req: Request, res: Response): void => {
     this.productServiceRepository.productTypeDao.list()
-      .then((productType) => {
-        res.json(productType)
-      }).catch((error) => {
-        this.sendError(res, error, 'Não foi possivel recuperar os tipos de produtos [PSCLT]')
-      })
+      .then(productType => res.json(productType))
+      .catch(error => this.sendError(res, error, 'Não foi possivel recuperar os tipos de produtos [PSCLT]'))
   }
 
   private save = (req: Request, res: Response): void => {
     const product = req.body as Product
+    console.log(product)
+
     product.profileId = req.userAuth.profileId
     this.productServiceRepository.update(product).then((result) => {
       this.sendResponseView(res, result)
@@ -89,7 +97,6 @@ export default class ProductServiceController extends AController {
   private valideteTagLink = (req: Request, res: Response): void => {
     const value = req.params.tagLink
     const productId = req.params.productId
-    ADao.debug = true
     this.productServiceRepository.checkTagLink(value, parseInt(productId)).then((list) => {
       if (list.length === 0) {
         this.sendResponseView(res, {
@@ -103,5 +110,23 @@ export default class ProductServiceController extends AController {
         })
       }
     })
+      .catch(error => this.sendError(res, error, 'Não foi possivel validar o link [PSCVTL]'))
+  }
+
+  private listPaymentsOf = (req: Request, res: Response): void => {
+    const productId = req.params.productId
+    this.productServiceRepository.paymentDao
+      .fetchBy(parseInt(productId), 'productId = ?')
+      .then(list => res.json(list))
+      .catch(error => this.sendError(res, error, 'Não foi possivel listar os meios de pagamentos [PSCLP]'))
+  }
+
+  private listProductInfo = (req: Request, res: Response): void => {
+    const productId = req.params.productId
+    if (productId) {
+      this.productServiceRepository.listProductInfo(parseInt(productId))
+        .then(list => res.json(list))
+        .catch(error => this.sendError(res, error, 'Não foi possivel listar as informações do produto [PSCLPI]'))
+    }
   }
 }

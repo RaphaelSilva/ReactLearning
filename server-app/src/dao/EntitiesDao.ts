@@ -2,7 +2,7 @@ import ADao from './ADao'
 import {
   Product, ProductType, Local, Profile, Professional,
   Address, Contact, Commerce, User, Customer, Payment,
-  Cart, Order, OrderItem
+  Cart, Order, OrderItem, ProductInfo
 } from '../models/Entities'
 
 export class AddressDao extends ADao<Address> {
@@ -90,6 +90,12 @@ export class ProductDao extends ADao<Product> {
       sql: this.selectWhere('tagLink = ?'),
       values: [tagLink]
     })
+  }
+}
+
+export class ProductInfoDao extends ADao<ProductInfo> {
+  constructor () {
+    super('productInfo', 'productId,title,description,img')
   }
 }
 
